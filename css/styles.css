@@ -40,7 +40,7 @@
         box-shadow: 0 2px 6px #d01aff;
       }
 
-      #pac-input {
+      #pac-input, #artistSearch {
         background-color: #fff;
         font-family: Roboto;
         font-size: 15px;
@@ -144,4 +144,10 @@
 
       .show-inputbtns .input-buttons {
         display: inline-block;
+      }
+
+      button{
+        float:right;
+        margin-top: 100px;
+        margin-right:150px;
       }
