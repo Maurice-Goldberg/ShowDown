@@ -1,0 +1,147 @@
+      body {
+        background-color: #5410ff;
+      }
+
+      h1 {
+        font-family: Roboto;
+        font-size: 70px;
+        color: #fff;
+        font-weight: bold;
+        position: absolute;
+        top: -35px;
+        left: 450px;
+        text-shadow: 0 3px 9px #d01aff;
+      }
+
+      /* Always set the map height explicitly to define the size of the div
+      * element that contains the map. */
+      #map {
+        height: 65%;
+        width: 65%;
+        position: absolute;
+        left: 200px;
+        top: 150px;
+        box-shadow: 0 4px 12px #d01aff;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .controls {
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 5px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px #d01aff;
+      }
+
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 400px;
+        position: absolute;
+        top: 95px;
+        left: 200px;
+
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+
+      .pac-container {
+        font-family: Roboto;
+      }
+
+      #type-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        padding: 5px 11px 0px 11px;
+      }
+
+      #type-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+      #target {
+        width: 345px;
+      }
+
+      /*category dropdown menu*/
+      #categoryDropdown {
+        position: absolute;
+        left: 615px;
+        top: 105px;
+        width: 230px;
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px #d01aff;
+      }
+
+      /*for the dropdown calender */
+      #calendarForm {
+        position: absolute;
+        left: 850px;
+        top: 95px;
+      }
+
+      #calendarBox {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        border: 1px solid transparent;
+        border-radius: 5px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px #d01aff;
+        width: 170px;
+      }
+
+      .form-row {
+        padding: 5px 10px;
+        margin: 5px 0;
+      }
+
+      label {
+        display: block;
+        margin: 3px 0;
+      }
+
+      .form-row input {
+        width: 220px;
+        padding: 3px 1px;
+        border: 1px solid #ccc;
+        box-shadow: none;
+      }
+      .form-row input[type="checkbox"] {
+        width: 15px;
+      }
+
+      .show-inputbtns .input-buttons {
+        display: inline-block;
+      }
