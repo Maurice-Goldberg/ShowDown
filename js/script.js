@@ -1,66 +1,94 @@
+//https://developers.google.com/maps/documentation/javascript/examples/polyline-simple
+var inputDate;
+var attractionID;
+
 $(document).ready(function(){
+
+  /** dropdown selection control **/
   $('#categoryDropdown').on('change', function() {
     if (this.value == 'Artist')
     {
-      $('#pac-input').hide();
+      $('#pac-input').hide(); //hide autocomplete search box
+      $('#calendarForm').hide(); //hide calendar
       $('#artistSearch').show();
     }
     else
     {
       $('#artistSearch').hide();
       $('#pac-input').show();
+      $('#calendarForm').show();
       $('#artistSearch').val(''); //empty the input field so that autocomplete map loads
       initAutocomplete(); //load autocomplete map
     }
   });
 
-  $('#find').click(function(e){
-    e.preventDefault();
-    var artistName = $('#artistSearch').val();
-    if (artistName != "")
-    {
-        /* get attraction ID from artistName */
-      $.ajax({
-      type:"GET",
-      url:"https://app.ticketmaster.com/discovery/v2/attractions.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&keyword="+artistName,
-      // async:true,
-      dataType: "json",
-      success: function(json) {
-        console.log(json);
-        for (var i = 0; i < json.page.totalElements; i++)
-        {
-          if (json._embedded.attractions[i].name == artistName)
-          {
-            attractionID = json._embedded.attractions[i].id;
-            break;
-          }
-        } 
+  /** get data from calendar input **/
+  $('input[type="date"]').change(function(){
+        inputDate = this.value;
+  });
 
-        /* get events with attraction(artist) ID */
+  /** if pressed enter on artist input field **/
+  $('#artistSearch').keypress(function (e) {
+    var key = e.which;
+    if(key == 13)  // the enter key code
+    {
+      e.preventDefault();
+      var artistName = $('#artistSearch').val();
+      if (artistName != "") //if searching for an artist
+      {
+          /* get attraction ID from artistName */
         $.ajax({
-        type: "GET",
-        url: "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&attractionId="+attractionID+ "&size="+500,
+        type:"GET",
+        url:"https://app.ticketmaster.com/discovery/v2/attractions.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&keyword="
+        +artistName + "&size="+500,
         // async:true,
         dataType: "json",
         success: function(json) {
-                console.log(json);
-                // var e = document.getElementById("events");
-                // e.innerHTML = json.page.totalElements + " events found.";
-                // showEvents(json);
-                initMap(json);
-                
-        },
+          console.log(json);
+          for (var i = 0; i < json.page.totalElements; i++)
+          {
+            if (json._embedded.attractions[i].name == artistName)
+            {
+              attractionID = json._embedded.attractions[i].id;
+              break;
+            }
+          } 
+
+          if (attractionID != undefined) //valid artist name input
+          {
+            var todayDate = getCurrentDate();
+            /* get events with attraction(artist) ID */
+            $.ajax({
+            type: "GET",
+            url: "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&attractionId="+
+            attractionID+ "&size="+500 + "&startDateTime="+todayDate+"T00:00:00Z", //add end date
+            // async:true,
+            dataType: "json",
+            success: function(json) {
+              console.log(json);
+              initMap(json);
+              attractionID = undefined;
+                    
+            },
+            error: function(xhr, status, err) {
+              console.log(err);
+            }
+            });
+          }
+          else //invalid artist name input
+          {
+            alert("Please input a valid artist's name.");
+          }          
+          
+        }, 
         error: function(xhr, status, err) {
-            console.log(err);
+          console.log(err);
         }
         });
-      },
-      error: function(xhr, status, err) {
-        console.log(err);
       }
-      });
     }
-  });
+  }); 
+
 });
 
  /** Draw Map on Load **/
@@ -135,7 +163,6 @@ $(document).ready(function(){
 function initMap(json){
   var mapDiv = document.getElementById('map');
   var map = new google.maps.Map(mapDiv, {
-    // center: {lat: position.coords.latitude, lng: position.coords.longitude},
     center: new google.maps.LatLng(38, -97),
     zoom: 4
   });
@@ -150,5 +177,57 @@ function addMarker(map, event) {
     map: map
   });
   marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
-  console.log(marker);
+
+  google.maps.event.addListener(marker, 'click', function() {
+    console.log(event._embedded.venues[0].address.line1); //testing
+
+    var request = {
+      query: event._embedded.venues[0].address.line1 + "" 
+      + event._embedded.venues[0].state.name+ ""
+      +event._embedded.venues[0].name//info from TM API
+    };
+    var service = new google.maps.places.PlacesService(map);
+    service.textSearch(request, function(results, status){
+      console.log(results); //get placeId and call place details api 
+
+      service.getDetails({'placeId': results[0].place_id}, function(results, status){
+        console.log(results);
+
+        /** display venue info **/
+          //results.photos[0] for venue photo
+          //results.name for venue name (sometimes just an address)
+          //results.formatted_address for venue address
+          //event name
+          //artist name
+          //date of event
+          //time of event
+        /** **/
+
+      });
+    });
+
+   }); // end of click event
+
+
 };
+
+
+function getCurrentDate(){
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth()+1; //January is 0!
+  var yyyy = today.getFullYear();
+
+  if(dd<10) {
+      dd='0'+dd
+  } 
+
+  if(mm<10) {
+      mm='0'+mm
+  } 
+
+  today = yyyy+'-'+mm+'-'+dd;
+  return today;
+
+};
+
