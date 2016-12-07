@@ -16,6 +16,10 @@
 
     <div id = "MainWrap" ng-app="showDown" ng-controller="showDownController" align="center">
 
+      <button type="submit" class="btn btn-primary"  style="float: left;" ng-click="seeSavedShows()">Saved Shows</button>
+
+      <button type="submit" class="btn btn-primary"  style="float: left;" ng-click="clearSaved()">Clear Saved</button>
+
     	<input id="pac-input" class="controls" type="text" placeholder="Enter {{category}}...">
       <input id="artistSearch" class="controls" type="text" placeholder="Enter {{category}}..." hidden>
 
@@ -39,11 +43,11 @@
         <p id="venueAddress"></p>
         <p id="venuePhone"></p>
         <p id="venueWebsite"></p>
+        <button type="submit" class="btn btn-primary" ng-click="save()">Save</button>
       </div>
 
       <div id="musicPlayer"></div>
-
-    </div>
+      <div id="savedShows"></div>
     
 
 	<div id="map"></div>

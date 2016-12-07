@@ -15,9 +15,50 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
     console.log('date');
   }; 
 
+  $scope.save = function(){
+    var id = selectedMarker['id'];
+    localStorage.setItem(String(id), JSON.stringify(selectedMarker));
+    alert("Show successfully saved.");
+  }; 
+
+  $scope.clearSaved = function(){
+    localStorage.clear();
+    alert("Saved shows cleared.");
+  };
+
+  $scope.seeSavedShows = function(){
+
+    var event = 0;
+    eventList = []; 
+
+    for(var i in localStorage){
+      event = JSON.parse(localStorage[i]); 
+      eventList.push(event);
+    }
+
+    if(eventList.length == 0){
+      alert("No shows saved silly.");
+    }
+    else{
+      var mapDiv = document.getElementById('map');
+      var map = new google.maps.Map(mapDiv, {
+        center: new google.maps.LatLng(38, -97),
+        zoom: 4
+      });
+      for(var i = 0; i < eventList.length; i++){
+        event = eventList[i];
+        addMarker(map, event);
+
+      }
+    }
+
+  }; 
+
 }]);
 
 // GLOBAL VARIABLES BELOW
+var selectedMarker = 0;
+
 // this array will hold all the audio objects
 var audioVariables = [];
 for(var i = 0; i < 200; i++){
@@ -276,6 +317,8 @@ function addMarker(map, event) {
 
   // marker clicked 
   google.maps.event.addListener(marker, 'click', function() {
+
+    selectedMarker = event;
 
     // Delete previous music players
     $('#musicPlayer').empty();
