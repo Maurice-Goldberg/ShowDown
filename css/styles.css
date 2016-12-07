@@ -13,6 +13,38 @@
         text-shadow: 0 3px 9px #d01aff;
       }
 
+      /*venue info*/
+      div > p {
+        margin-left: 13px;
+        margin-right: 13px;
+        font: Roboto;
+        color: #5410ff;
+      }
+
+      #venuePhoto {
+        height: 70px;
+        width: auto;
+        margin-left: 10px;
+        margin-right: 10px;
+        font-weight: bold;
+      }
+
+      /*class to add and remove to hide and show elements*/
+      .hidden {
+        display: none;
+      }
+
+      #sideBar {
+        position: absolute;
+        top: 150px;
+        left: 800px;
+        width: 232px;
+        height: 412px;
+        background-color: #89cff0;
+        box-shadow: 0 2px 6px #d01aff;
+        z-index: 1;
+      }
+
       /* Always set the map height explicitly to define the size of the div
       * element that contains the map. */
       #map {

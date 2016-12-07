@@ -18,10 +18,9 @@
     <input id="artistSearch" class="controls" type="text" placeholder="Enter artist,city, or venue" hidden>
 
   	<select id="categoryDropdown" class="form-control">
-  		<option selected disabled hidden>Choose what to search for</option>
-  		<option value = "Artist">Artist</option>
-  		<option value = "City">City</option>
+  		<option selected value = "City">City</option>
   		<option value = "Venue">Venue</option>
+      <option value = "Artist">Artist</option>
   	</select>
 
   	<form id="calendarForm" action="#" class="ws-validate">
@@ -30,8 +29,14 @@
   		</div>
   	</form>
 
-    <!-- <button hidden id="find" type="submit" class="btn btn-primary">Search</button> -->
-
+    <div id="sideBar" class="hidden">
+      <img id="venuePhoto" src="band.ico">
+      <p id="venueName"></p>
+      <p id="venueAddress"></p>
+      <p id="venuePhone"></p>
+      <p id="venueWebsite"></p>
+    </div>
+    
 
 	<div id="map"></div>
  

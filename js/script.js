@@ -4,6 +4,8 @@ var attractionID;
 
 $(document).ready(function(){
 
+  $('#sideBar').hide();
+
   /** dropdown selection control **/
   $('#categoryDropdown').on('change', function() {
     if (this.value == 'Artist')
@@ -68,7 +70,7 @@ $(document).ready(function(){
               console.log(json);
               initMap(json);
               attractionID = undefined;
-                    
+              //some sort of drawLines(json) function should be called here
             },
             error: function(xhr, status, err) {
               console.log(err);
@@ -77,7 +79,7 @@ $(document).ready(function(){
           }
           else //invalid artist name input
           {
-            alert("Please input a valid artist's name.");
+            alert("Please input a valid artist name.");
           }          
           
         }, 
@@ -181,6 +183,16 @@ function addMarker(map, event) {
   google.maps.event.addListener(marker, 'click', function() {
     console.log(event._embedded.venues[0].address.line1); //testing
 
+    //show sideBar element if it's hidden
+    if($('#sideBar').hasClass('hidden')) {
+
+      //remove 'hidden' class (i.e. show element)
+      $('#sideBar').removeClass('hidden');
+      
+      //fadeIn element
+      $('#sideBar').fadeIn('fast');
+    }
+
     var request = {
       query: event._embedded.venues[0].address.line1 + "" 
       + event._embedded.venues[0].state.name+ ""
@@ -192,20 +204,36 @@ function addMarker(map, event) {
 
       service.getDetails({'placeId': results[0].place_id}, function(results, status){
         console.log(results);
-
         /** display venue info **/
-          //results.photos[0] for venue photo
-          //results.name for venue name (sometimes just an address)
-          //results.formatted_address for venue address
+
+        //results.photos[0] for venue photo
+        //getURL does not result in proper output and neither does html_attributions
+        $('#venuePhoto').src = results.photos[0].getUrl;
+        
+        //results.name for venue name (sometimes just an address)
+        $('#venueName').text(results.name);
+          
+        //results.formatted_address for venue address
+        $('#venueAddress').text(results.formatted_address);
+
+        //phone number
+        $('#venuePhone').text(results.formatted_phone_number);
+
+        //website
+        if($('#sideBar').has("#venueLink")) {
+          $('#venueLink').remove();
+        }
+        $('#venueWebsite').append("<a id=\"venueLink\" href=\"" + results.website + "\">" + results.website + "</a>");
+
+        /*display event info (still need to figure this part out)*/
           //event name
           //artist name
           //date of event
           //time of event
+          //link to tickets
         /** **/
-
       });
     });
-
    }); // end of click event
 
 
