@@ -10,22 +10,92 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
 
   $scope.changeOptionSelected = function(){
     console.log('changing selected option.');
-
-
   };
-
   $scope.dateChange = function() {
     console.log('date');
   }; 
 
-
-
-
 }]);
-// ^^^^^^^^^^^ ANGULAR ^^^^^^^^^^^^^^
 
+// GLOBAL VARIABLES BELOW
+// this array will hold all the audio objects
+var audioVariables = [];
+for(var i = 0; i < 200; i++){
+  audioVariables.push(0);
+}
+// current_global keeps track of the latest variable slot in the array above that's been used to hold an audio object
+var current_global = 0; 
 
+// Goes through all the players and pauses them
+var stopPlayers = function() {
+  for(var i = 0; i < 200; i++){
+    if(audioVariables[i] != 0){
+      audioVariables[i].pause(); 
+    }
+  }
+}; 
 
+// ============= SPOTIFY FUNCTIONS =============
+// Gets top tracks for artist ID, then appends players
+var searchForTopTracks = function (artistID) {
+
+  $.ajax({
+        url: 'https://api.spotify.com/v1/artists/' + artistID + '/top-tracks',
+        data: {
+            country: 'US',
+        },
+        success: function (response) {
+            // this is the local 'current' variable for audio that this new button will refer to
+            var curr = current_global;
+
+            // Get artist, album, and track info from response
+            var artist = response['tracks'][0]['artists'][0]['name']
+            var album = response['tracks'][0]['album']['name']
+            var track = response['tracks'][0]['name']
+
+            var audioInfo = "<font color='white'> Artist: " + artist + ", Album: " + album + ", Track: " + track + "</font><br>"
+
+            audioVariables[current_global] = new Audio();
+            audioVariables[current_global].src = response['tracks'][0]['preview_url']
+
+            current_global++; 
+
+            var audioButton = document.createElement("button");
+            audioButton.className = "btn btn-primary"
+            audioButton.innerHTML = "<span class='glyphicon glyphicon-play'></span>"
+            audioButton.onclick = function() { 
+                if(!audioVariables[curr].paused) {
+                audioVariables[curr].pause();
+                audioButton.innerHTML = "<span class='glyphicon glyphicon-play'></span>"
+              }
+              else{
+                audioVariables[curr].play();
+                audioButton.innerHTML = "<span class='glyphicon glyphicon-pause'></span>"
+              }
+            };
+
+            $('#musicPlayer').append(audioInfo);
+            $('#musicPlayer').append(audioButton);
+            $('#musicPlayer').append("<hr>");
+
+        }
+    });
+
+}; 
+
+// Searches for an artist on Spotify, returns that artist's ID 
+var searchForArtist = function (query) {
+    $.ajax({
+        url: 'https://api.spotify.com/v1/search',
+        data: {
+            q: query,
+            type: 'artist'
+        },
+        success: function (response) { 
+            searchForTopTracks(String(response['artists']['items'][0]['id']));
+        }
+    });
+};
 
 $(document).ready(function(){
 
@@ -206,6 +276,31 @@ function addMarker(map, event) {
 
   // marker clicked 
   google.maps.event.addListener(marker, 'click', function() {
+
+    // Delete previous music players
+    $('#musicPlayer').empty();
+
+    // Stop currently playing players from previous search
+    stopPlayers(); 
+
+    //console.log(event._embedded.venues[0].address.line1); //testing
+
+    //console.log('EVENT INFO BELO')
+    console.log(event['_embedded']['attractions'][0]['name'])
+    console.log(event)
+
+    var artists = [];
+    var attractions = event['_embedded']['attractions'];
+    for(var i = 0; i < attractions.length; i++){
+      var attraction = attractions[i];
+      artists.push(attraction['name'])
+    }
+
+    console.log(artists)
+
+    for(var i = 0; i < artists.length; i++){
+      searchForArtist(artists[i]);
+    }
 
     //show sideBar element if it's hidden
     if($('#sideBar').hasClass('hidden')) {
