@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/styles.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdl7qV8W9AE20psFLZCZWBuj7THk2r2no&libraries=places&callback=initAutocomplete"
   async defer>  </script>
 	<script type="text/javascript" src="js/script.js"></script>
@@ -14,27 +14,31 @@
 <body>
 	<h1>ShowDown</h1>
 
-  	<input id="pac-input" class="controls" type="text" placeholder="Enter artist, city, or venue">
-    <input id="artistSearch" class="controls" type="text" placeholder="Enter artist,city, or venue" hidden>
+    <div id = "MainWrap" ng-app="showDown" ng-controller="showDownController" align="center">
 
-  	<select id="categoryDropdown" class="form-control">
-  		<option selected value = "City">City</option>
-  		<option value = "Venue">Venue</option>
-      <option value = "Artist">Artist</option>
-  	</select>
+    	<input id="pac-input" class="controls" type="text" placeholder="Enter {{category}}...">
+      <input id="artistSearch" class="controls" type="text" placeholder="Enter {{category}}..." hidden>
 
-  	<form id="calendarForm" action="#" class="ws-validate">
-  		<div class="form-row show-inputbtns">
-  			<input id="calendarBox" type="date" data-date-inline-picker="false" data-date-open-on-focus="true" />
-  		</div>
-  	</form>
+    	<select id="categoryDropdown" class="form-control" ng-model="category" ng-change="changeOptionSelected()">
+    		<option selected value = "City">City</option>
+    		<option value = "Venue">Venue</option>
+        <option value = "Artist">Artist</option>
+    	</select>
 
-    <div id="sideBar" class="hidden">
-      <img id="venuePhoto" src="band.ico">
-      <p id="venueName"></p>
-      <p id="venueAddress"></p>
-      <p id="venuePhone"></p>
-      <p id="venueWebsite"></p>
+    	<form id="calendarForm" action="#" class="ws-validate">
+    		<div class="form-row show-inputbtns">
+    			<input id="calendarBox" type="date" data-date-inline-picker="false" data-date-open-on-focus="true" />
+    		</div>
+    	</form>
+
+      <div id="sideBar" class="hidden">
+        <img id="venuePhoto" src="band.ico">
+        <p id="venueName"></p>
+        <p id="venueAddress"></p>
+        <p id="venuePhone"></p>
+        <p id="venueWebsite"></p>
+      </div>
+
     </div>
     
 

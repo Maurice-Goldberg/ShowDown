@@ -180,6 +180,7 @@ function addMarker(map, event) {
   });
   marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
 
+  // marker clicked 
   google.maps.event.addListener(marker, 'click', function() {
     console.log(event._embedded.venues[0].address.line1); //testing
 
@@ -258,4 +259,34 @@ function getCurrentDate(){
   return today;
 
 };
+
+
+// angular stuff below
+var app = angular.module('showDown', []);
+app.controller('showDownController', ['$scope', '$http', '$compile',  function($scope, $http, $compile) {
+
+  $scope.category = 'City'
+
+  $scope.changeOptionSelected = function(){
+    console.log('changing selected option.')
+
+
+  };
+
+
+}]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
