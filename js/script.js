@@ -2,6 +2,31 @@
 var inputDate;
 var attractionID;
 
+// ============= ANGULAR =============
+var app = angular.module('showDown', []);
+app.controller('showDownController', ['$scope', '$http', '$compile',  function($scope, $http, $compile) {
+
+  $scope.category = 'City';
+
+  $scope.changeOptionSelected = function(){
+    console.log('changing selected option.');
+
+
+  };
+
+  $scope.dateChange = function() {
+    console.log('date');
+  }; 
+
+
+
+
+}]);
+// ^^^^^^^^^^^ ANGULAR ^^^^^^^^^^^^^^
+
+
+
+
 $(document).ready(function(){
 
   $('#sideBar').hide();
@@ -184,6 +209,9 @@ function addMarker(map, event) {
   google.maps.event.addListener(marker, 'click', function() {
     console.log(event._embedded.venues[0].address.line1); //testing
 
+    console.log('EVENT INFO BELO')
+    console.log(event)
+
     //show sideBar element if it's hidden
     if($('#sideBar').hasClass('hidden')) {
 
@@ -207,15 +235,16 @@ function addMarker(map, event) {
         console.log(results);
         /** display venue info **/
 
+        $('#eventName').text(event['name']);
         //results.photos[0] for venue photo
         //getURL does not result in proper output and neither does html_attributions
         $('#venuePhoto').src = results.photos[0].getUrl;
-        
+
         //results.name for venue name (sometimes just an address)
-        $('#venueName').text(results.name);
+        $('#venueName').text('Venue: ' + results.name);
           
         //results.formatted_address for venue address
-        $('#venueAddress').text(results.formatted_address);
+        $('#venueAddress').text('Address: ' + results.formatted_address);
 
         //phone number
         $('#venuePhone').text(results.formatted_phone_number);
@@ -224,7 +253,8 @@ function addMarker(map, event) {
         if($('#sideBar').has("#venueLink")) {
           $('#venueLink').remove();
         }
-        $('#venueWebsite').append("<a id=\"venueLink\" href=\"" + results.website + "\">" + results.website + "</a>");
+        // $('#venueWebsite').append("<a id=\"venueLink\" href=\"" + results.website + "\">" + results.website + "</a>");
+        $('#venueWebsite').append("Buy a <a href=\"" + event['url'] + "\">Ticket</a>!");
 
         /*display event info (still need to figure this part out)*/
           //event name
@@ -261,20 +291,6 @@ function getCurrentDate(){
 };
 
 
-// angular stuff below
-var app = angular.module('showDown', []);
-app.controller('showDownController', ['$scope', '$http', '$compile',  function($scope, $http, $compile) {
-
-  $scope.category = 'City'
-
-  $scope.changeOptionSelected = function(){
-    console.log('changing selected option.')
-
-
-  };
-
-
-}]);
 
 
 
