@@ -1,4 +1,4 @@
-//https://developers.google.com/maps/documentation/javascript/examples/polyline-simple
+
 var inputDate;
 var attractionID;
 
@@ -71,7 +71,6 @@ $(document).ready(function(){
         // async:true,
         dataType: "json",
         success: function(json) {
-          console.log(json);
           for (var i = 0; i < json.page.totalElements; i++)
           {
             if (json._embedded.attractions[i].name == artistName)
@@ -207,10 +206,6 @@ function addMarker(map, event) {
 
   // marker clicked 
   google.maps.event.addListener(marker, 'click', function() {
-    console.log(event._embedded.venues[0].address.line1); //testing
-
-    console.log('EVENT INFO BELO')
-    console.log(event)
 
     //show sideBar element if it's hidden
     if($('#sideBar').hasClass('hidden')) {
@@ -222,23 +217,54 @@ function addMarker(map, event) {
       $('#sideBar').fadeIn('fast');
     }
 
-    var request = {
-      query: event._embedded.venues[0].address.line1 + "" 
-      + event._embedded.venues[0].state.name+ ""
-      +event._embedded.venues[0].name//info from TM API
-    };
+    if (event._embedded.venues[0].name != undefined) //error handling
+    {
+      var request = {
+      query: event._embedded.venues[0].address.line1 + " " 
+      +event._embedded.venues[0].city.name+ " "
+      +event._embedded.venues[0].country.name+" "
+      +event._embedded.venues[0].name //info from TM API
+      };
+    }
+    else
+    {
+      var request = {
+      query: event._embedded.venues[0].address.line1 + " " 
+      +event._embedded.venues[0].city.name+ " "
+      +event._embedded.venues[0].country.name//info from TM API
+      };
+    }
+    
     var service = new google.maps.places.PlacesService(map);
+
+    //get placeId and call place details api 
     service.textSearch(request, function(results, status){
-      console.log(results); //get placeId and call place details api 
 
-      service.getDetails({'placeId': results[0].place_id}, function(results, status){
-        console.log(results);
-        /** display venue info **/
+      //display event name from TM api
+      $('#eventName').text(event.name); 
 
-        $('#eventName').text(event['name']);
-        //results.photos[0] for venue photo
-        //getURL does not result in proper output and neither does html_attributions
-        $('#venuePhoto').src = results.photos[0].getUrl;
+      //event date & time in Universal Time Coordinated
+      $('#eventTime').text('Datetime: '+ event.dates.start.dateTime); 
+
+      if($('#sideBar').has("#ticketLink")) { 
+        $('#ticketLink').remove();
+      }
+      //display ticket link from TM api
+      $('#venueWebsite').append("<p id='ticketLink'> Buy a <a href=\"" + event.url + "\" target='_blank'>Ticket</a>! </p>");
+
+
+      if (results.length != 0) //error handling
+      {
+        service.getDetails({'placeId': results[0].place_id}, function(results, status){
+       
+        if (results.photos != undefined)
+        {
+          $('img#venuePhoto').attr('src', results.photos[0].getUrl({
+            'maxWidth': 200,
+            'maxHeight': 500
+          }));
+        }
+        
 
         //results.name for venue name (sometimes just an address)
         $('#venueName').text('Venue: ' + results.name);
@@ -248,22 +274,30 @@ function addMarker(map, event) {
 
         //phone number
         $('#venuePhone').text(results.formatted_phone_number);
+        });
+      }
 
-        //website
-        if($('#sideBar').has("#venueLink")) {
-          $('#venueLink').remove();
+      else 
+      //if google places can't find location details, display location info from ticketmaster
+      {
+        //photo
+        $('img#venuePhoto').attr('src','band.ico');
+        //venue name
+        $('#venueName').text('Venue: ' + event._embedded.venues[0].name); 
+        //address
+        $('#venueAddress').text('Address: ' + event._embedded.venues[0].address.line1 
+          + ", " + event._embedded.venues[0].city.name+ ", "+event._embedded.venues[0].country.name);      
+        //phone number
+        if (event._embedded.venues[0].boxOfficeInfo != undefined)
+        {
+          $('#venuePhone').text(event._embedded.venues[0].boxOfficeInfo.phoneNumberDetail); 
         }
-        // $('#venueWebsite').append("<a id=\"venueLink\" href=\"" + results.website + "\">" + results.website + "</a>");
-        $('#venueWebsite').append("Buy a <a href=\"" + event['url'] + "\">Ticket</a>!");
-
-        /*display event info (still need to figure this part out)*/
-          //event name
-          //artist name
-          //date of event
-          //time of event
-          //link to tickets
-        /** **/
-      });
+        else
+        {
+          $('#venuePhone').text('');
+        }
+      }
+      
     });
    }); // end of click event
 
