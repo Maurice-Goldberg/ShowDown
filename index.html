@@ -1,13 +1,17 @@
+<!-- AIzaSyAdl7qV8W9AE20psFLZCZWBuj7THk2r2no -->
 <!DOCTYPE html>
 <html>
 <head>
   <title> ShowDown </title>
   <link rel="icon" href="band.ico">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Permanent+Marker" rel="stylesheet">
 	<link rel="stylesheet" href="css/styles.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdl7qV8W9AE20psFLZCZWBuj7THk2r2no&libraries=places&callback=initAutocomplete"
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgToID7VGftJesWx1S_Ax_UY3f4NAqBf4&libraries=places&callback=initAutocomplete"
+
+  
   async defer>  </script>
 	<script type="text/javascript" src="js/script.js"></script>
 </head>
@@ -20,23 +24,23 @@
 
       <button type="submit" class="btn btn-primary"  style="float: left;" ng-click="clearSaved()">Clear Saved</button>
 
-    	<input id="pac-input" class="controls" type="text" placeholder="Enter {{category}}...">
-      <input id="artistSearch" class="controls" type="text" placeholder="Enter {{category}}..." hidden>
-	    <input id="citySearch" class="controls" type="text" placeholder="Enter {{category}}..." hidden>
-      <input id="venueSearch" class="controls" type="text" placeholder="Enter {{category}}..." hidden>
+      	<input id="pac-input" class="controls" type="text" placeholder="Enter Location...">
+        <input id="artistSearch" class="controls" type="text" placeholder="Enter Artist..." hidden>
 
 
-    	<select id="categoryDropdown" class="form-control" ng-model="category" ng-change="changeOptionSelected()">
-    		<option selected value = "City">City</option>
-    		<option value = "Venue">Venue</option>
-        <option value = "Artist">Artist</option>
-    	</select>
+      	<select id="categoryDropdown" class="form-control" ng-model="category" ng-change="changeOptionSelected()">
+      		<option selected value = "City">Location</option>
+          <option value = "Artist">Artist</option>
+      	</select>
 
-    	<form id="calendarForm" action="#" class="ws-validate">
-    		<div class="form-row show-inputbtns">
-    			<input id="calendarBox" type="date" data-date-inline-picker="false" data-date-open-on-focus="true" />
-    		</div>
-    	</form>
+      	<form id="calendarForm" action="#" class="ws-validate">
+      		<div class="form-row show-inputbtns">
+      			<input id="calendarBox" type="date" data-date-inline-picker="false" data-date-open-on-focus="true" />
+      		</div>
+      	</form>
+
+        <button id="find" class="btn btn-info">Search</button>
+
 
       <div id="sideBar" class="hidden">
         <img id="venuePhoto" src="band.ico"> 
