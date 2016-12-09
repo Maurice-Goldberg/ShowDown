@@ -165,6 +165,76 @@ $(document).ready(function(){
         inputDate = this.value;
   });
 
+
+
+
+/** if pressed enter on venue input field **/
+  $('#venueSearch').keypress(function (e) {
+    var key = e.which;
+    if(key == 201)  // the enter key code
+    {
+      e.preventDefault();
+      var venueName = $('#venueSearch').val();
+      if (venueName != "") //if searching for an artist
+      {
+          /* get venue ID from artistName */
+        $.ajax({
+        type:"GET",
+        url:"https://app.ticketmaster.com/discovery/v2/venues.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&keyword="
+        +venueName + "&size="+500,
+        // async:true,
+        dataType: "json",
+        success: function(json) {
+          for (var i = 0; i < json.page.totalElements; i++)
+          {
+            if (json._embedded.venues[i].name == venueName)
+            {
+              venueID = json._embedded.venues[i].id;
+              break;
+            }
+          } 
+
+          if (venueID != undefined) //valid artist name input
+          {
+            var todayDate = getCurrentDate();
+            /* get events with venue ID */
+            $.ajax({
+            type: "GET",
+            url: "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&venueId="+
+            venueID+ "&size="+500 + "&startDateTime="+todayDate+"T00:00:00Z", //add end date
+            // async:true,
+            dataType: "json",
+            success: function(json) {
+              console.log(json);
+              initMap(json);
+              venueID = undefined;
+              //some sort of drawLines(json) function should be called here
+            },
+            error: function(xhr, status, err) {
+              console.log(err);
+            }
+            });
+          }
+          else //invalid artist name input
+          {
+            alert("Please input a valid venue name.");
+          }          
+          
+        }, 
+        error: function(xhr, status, err) {
+          console.log(err);
+        }
+        });
+      }
+    }
+  }); 
+
+
+
+
+
+
+
   /** if pressed enter on artist input field **/
   $('#artistSearch').keypress(function (e) {
     var key = e.which;
@@ -227,6 +297,8 @@ $(document).ready(function(){
   }); 
 
 });
+
+
 
  /** Draw Map on Load **/
   function initAutocomplete() {
@@ -441,6 +513,153 @@ function addMarker(map, event) {
 
 
 };
+
+
+
+
+
+
+function addMarker2(map, event) {
+  var marker = new google.maps.Marker({
+    position: new google.maps.LatLng(event._embedded.venues[0].location.latitude, event._embedded.venues[0].location.longitude),
+    map: map
+  });
+  marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+
+  // marker clicked 
+  google.maps.event.addListener(marker, 'click', function() {
+
+    selectedMarker = event;
+
+    // Delete previous music players
+    $('#musicPlayer').empty();
+
+    // Stop currently playing players from previous search
+    stopPlayers(); 
+
+    //console.log(event._embedded.venues[0].address.line1); //testing
+
+    //console.log('EVENT INFO BELO')
+    console.log(event['_embedded']['venues'][0]['name'])
+    console.log(event)
+
+    var venues = [];
+    var venues = event['_embedded']['venues'];
+    for(var i = 0; i < venues.length; i++){
+      var venue = venues[i];
+      venues.push(venue['name'])
+    }
+
+    console.log(venues)
+
+    /*for(var i = 0; i < artists.length; i++){
+      searchForArtist(artists[i]);
+    }*/
+
+    //show sideBar element if it's hidden
+    if($('#sideBar').hasClass('hidden')) {
+
+      //remove 'hidden' class (i.e. show element)
+      $('#sideBar').removeClass('hidden');
+      
+      //fadeIn element
+      $('#sideBar').fadeIn('fast');
+    }
+
+    if (event._embedded.venues[0].name != undefined) //error handling
+    {
+      var request = {
+      query: event._embedded.venues[0].address.line1 + " " 
+      +event._embedded.venues[0].city.name+ " "
+      +event._embedded.venues[0].country.name+" "
+      +event._embedded.venues[0].name //info from TM API
+      };
+    }
+    else
+    {
+      var request = {
+      query: event._embedded.venues[0].address.line1 + " " 
+      +event._embedded.venues[0].city.name+ " "
+      +event._embedded.venues[0].country.name//info from TM API
+      };
+    }
+    
+    var service = new google.maps.places.PlacesService(map);
+
+    //get placeId and call place details api 
+    service.textSearch(request, function(results, status){
+
+      //display event name from TM api
+      $('#eventName').text(event.name); 
+
+      //event date & time in Universal Time Coordinated
+      $('#eventTime').text('Datetime: '+ event.dates.start.dateTime); 
+
+      if($('#sideBar').has("#ticketLink")) { 
+        $('#ticketLink').remove();
+      }
+      //display ticket link from TM api
+      $('#venueWebsite').append("<p id='ticketLink'> Buy a <a href=\"" + event.url + "\" target='_blank'>Ticket</a>! </p>");
+
+
+      if (results.length != 0) //error handling
+      {
+        service.getDetails({'placeId': results[0].place_id}, function(results, status){
+       
+        if (results.photos != undefined)
+        {
+          $('img#venuePhoto').attr('src', results.photos[0].getUrl({
+            'maxWidth': 200,
+            'maxHeight': 500
+          }));
+        }
+        
+
+        //results.name for venue name (sometimes just an address)
+        $('#venueName').text('Venue: ' + results.name);
+          
+        //results.formatted_address for venue address
+        $('#venueAddress').text('Address: ' + results.formatted_address);
+
+        //phone number
+        $('#venuePhone').text(results.formatted_phone_number);
+        });
+      }
+
+      else 
+      //if google places can't find location details, display location info from ticketmaster
+      {
+        //photo
+        $('img#venuePhoto').attr('src','band.ico');
+        //venue name
+        $('#venueName').text('Venue: ' + event._embedded.venues[0].name); 
+        //address
+        $('#venueAddress').text('Address: ' + event._embedded.venues[0].address.line1 
+          + ", " + event._embedded.venues[0].city.name+ ", "+event._embedded.venues[0].country.name);      
+        //phone number
+        if (event._embedded.venues[0].boxOfficeInfo != undefined)
+        {
+          $('#venuePhone').text(event._embedded.venues[0].boxOfficeInfo.phoneNumberDetail); 
+        }
+        else
+        {
+          $('#venuePhone').text('');
+        }
+      }
+      
+    });
+   }); // end of click event
+
+};
+
+
+
+
+
+
+
+
+
 
 
 function getCurrentDate(){
