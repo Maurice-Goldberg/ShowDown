@@ -169,12 +169,13 @@ $(document).ready(function(){
 
 
 /** if pressed enter on venue input field **/
-  $('#venueSearch').keypress(function (e) {
+  $('#pac-input').keypress(function (e) {
     var key = e.which;
-    if(key == 201)  // the enter key code
+    if(key == 13)  // the enter key code
     {
       e.preventDefault();
-      var venueName = $('#venueSearch').val();
+      var venueName = $('#pac-input').val();
+
       if (venueName != "") //if searching for an artist
       {
           /* get venue ID from artistName */
@@ -185,6 +186,8 @@ $(document).ready(function(){
         // async:true,
         dataType: "json",
         success: function(json) {
+
+          console.log(json); //testing
           for (var i = 0; i < json.page.totalElements; i++)
           {
             if (json._embedded.venues[i].name == venueName)

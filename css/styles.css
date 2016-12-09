@@ -1,5 +1,7 @@
 body {
-  background-color: #5410ff;
+  background-image: url('../audience.jpg');
+  background-size: cover;
+  /*background-color: #5410ff;*/
 }
 
 h1 {
