@@ -163,6 +163,7 @@ $(document).ready(function(){
   $('#categoryDropdown').on('change', function() {
     if (this.value == 'Artist')
     {
+      $('#find').css('left', '855px');
       $('#pac-input').hide(); //hide autocomplete search box
       $('#calendarForm').hide(); //hide calendar
       $('#artistSearch').show();
