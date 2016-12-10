@@ -1,4 +1,3 @@
-
 var inputDate;
 var attractionID;
 var apiKey = 'AIzaSyCgToID7VGftJesWx1S_Ax_UY3f4NAqBf4';
@@ -576,20 +575,4 @@ function getCurrentDate(){
   return today;
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
