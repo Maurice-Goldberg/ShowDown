@@ -173,17 +173,17 @@ $(document).ready(function(){
   $('#categoryDropdown').on('change', function() {
     if (this.value == 'Artist')
     {
-      $('#find').css('left', '855px');
-      $('#pac-input').hide(); //hide autocomplete search box
-      $('#calendarForm').hide(); //hide calendar
-      $('#artistSearch').show();
+      $('#find').animate({
+        left: "-=195",
+      }, 750);
+      $('#calendarForm').fadeOut('slow');
     }
     else
     {
-      $('#find').css('left', '1050px');
-      $('#artistSearch').hide();
-      $('#pac-input').show();
-      $('#calendarForm').show();
+      $('#find').animate({
+        left: "+=195",
+      }, 750);
+      $('#calendarForm').fadeIn(1250);
       $('#artistSearch').val(''); //empty the input field so that autocomplete map loads
       initAutocomplete(); //load autocomplete map
     }
@@ -201,6 +201,10 @@ $(document).ready(function(){
       var artistName = $('#artistSearch').val();
       if (artistName != "") //if searching for an artist
       {
+        $('#sideBar').fadeOut('slow');
+        $('#musicPlayer').fadeOut('slow');
+        $('#sideBar').addClass('hidden');
+        $('#musicPlayer').addClass('hidden');
           /* get attraction ID from artistName */
         $.ajax({
         type:"GET",
@@ -261,7 +265,8 @@ $(document).ready(function(){
 
       else //searching by location
       {
-        
+        $('#sideBar').fadeOut('slow');
+        $('#musicPlayer').fadeOut('slow');
         var locationInfo = $('#pac-input').val();
         if (locationInfo == "") //empty search term
         {
