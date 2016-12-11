@@ -18,17 +18,18 @@ h1 {
 
 /*venue info*/
 div > p {
+  margin-top: 13px;
   margin-left: 13px;
   margin-right: 13px;
-  font: Roboto;
-  color: #5410ff;
+  color: #000000;
 }
 
 #venuePhoto {
-  height: 70px;
-  width: auto;
+  height: 115px;
+  width: 240px;
   margin-left: 10px;
   margin-right: 10px;
+  margin-top: 10px;
   font-weight: bold;
 }
 
@@ -40,29 +41,39 @@ div > p {
 #sideBar {
   position: absolute;
   top: 150px;
-  left: 800px;
-  width: 232px;
-  height: 412px;
-  background-color: #89cff0;
-  /*box-shadow: 0 2px 6px #d01aff;*/
-  z-index: 1;
+  left: 1000px;
+  width: 265px;
+  height: 470px;
+  color: #000000;
+  background-color: #3ce5bf;
+  border-radius: 3px;
+  box-shadow: 1px 1px 5px #3ae5c0;
+  font: Roboto;
 }
 
 #musicPlayer {
   position: absolute;
-  left: 200px;
-  top: 565px;
+  top: 150px;
+  left: 10px;
+  width: 265px;
+  height: auto;
+  border-radius: 3px;
+  background-color: #3ce5bf;
+  box-shadow: 1px 1px 5px #3ae5c0;
+  font: Roboto;
 }
 
 /* Always set the map height explicitly to define the size of the div
 * element that contains the map. */
 #map {
-  height: 65%;
-  width: 65%;
   position: absolute;
-  left: 200px;
+  height: 470px;
+  width: 706px;
+  position: absolute;
+  left: 285px;
   top: 150px;
-  /*box-shadow: 0 4px 12px #d01aff;*/
+  border-radius: 3px;
+  box-shadow: 2px 2px 5px #3ae5c0;
 }
 /* Optional: Makes the sample page fill the window. */
 html, body {
@@ -78,7 +89,6 @@ html, body {
   -moz-box-sizing: border-box;
   height: 32px;
   outline: none;
-  /*box-shadow: 0 2px 6px #d01aff;*/
 }
 
 #pac-input, #artistSearch {
@@ -187,9 +197,14 @@ label {
   display: inline-block;
 }
 
+#saveButtons {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
 #find{
   position: absolute;
   left: 1050px;
   top: 103px;
-
 }

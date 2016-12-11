@@ -39,7 +39,7 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
     }
 
     if(eventList.length == 0){
-      alert("No shows saved silly.");
+      alert("No shows saved.");
     }
     else{
       var mapDiv = document.getElementById('map');
@@ -60,6 +60,9 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
 
 // GLOBAL VARIABLES BELOW
 var selectedMarker = 0;
+
+//keeps track of how many artists there are per event (to extend musicPlayer bar accordingly)
+var artistCount = 0;
 
 // this array will hold all the audio objects
 var audioVariables = [];
@@ -96,7 +99,7 @@ var searchForTopTracks = function (artistID) {
             var album = response['tracks'][0]['album']['name']
             var track = response['tracks'][0]['name']
 
-            var audioInfo = "<font color='white'> Artist: " + artist + ", Album: " + album + ", Track: " + track + "</font><br>"
+            var audioInfo = "<br><font color='black'> Artist: " + artist + "<br>" + "Album: " + album + "<br>" + "Track: " + track + "</font><br>"
 
             audioVariables[current_global] = new Audio();
             audioVariables[current_global].src = response['tracks'][0]['preview_url']
@@ -122,9 +125,13 @@ var searchForTopTracks = function (artistID) {
             });
 
             $('#musicPlayer').append(audioInfo);
+            $('#musicPlayer').append("<br>");
             $('#musicPlayer').append(audioButton);
             $('#musicPlayer').append("<hr>");
 
+            if(artistCount > 2) {
+              //do something that will make div be larger or smaller based on how many elements it has
+            }
         }
     });
 
@@ -142,9 +149,9 @@ var searchForArtist = function (query) {
             //error handling
             if (response['artists']['items'][0] != undefined)
             {
+              artistCount++;
               searchForTopTracks(String(response['artists']['items'][0]['id']));
             }
-            
         }
     });
 };
@@ -157,6 +164,10 @@ $(document).ready(function(){
   inputDate = getCurrentDate();
 
   $('#sideBar').hide();
+  $('#musicPlayer').hide();
+  $('#map').hide();
+  $('#map').removeClass('hidden');
+  $('#map').fadeIn('slow');
 
   /** dropdown selection control **/
   $('#categoryDropdown').on('change', function() {
@@ -169,6 +180,7 @@ $(document).ready(function(){
     }
     else
     {
+      $('#find').css('left', '1050px');
       $('#artistSearch').hide();
       $('#pac-input').show();
       $('#calendarForm').show();
@@ -426,6 +438,15 @@ function addMarker(map, event) {
     // Stop currently playing players from previous search
     stopPlayers(); 
 
+    //show musicPlayer element if it's hidden
+    if($('#musicPlayer').hasClass('hidden')) {
+
+      //remove 'hidden' class (i.e. show element)
+      $('#musicPlayer').removeClass('hidden');
+      
+      //fadeIn element
+      $('#musicPlayer').fadeIn('slow');
+    }
 
     var artists = [];
     var attractions = event['_embedded']['attractions'];
@@ -453,7 +474,7 @@ function addMarker(map, event) {
       $('#sideBar').removeClass('hidden');
       
       //fadeIn element
-      $('#sideBar').fadeIn('fast');
+      $('#sideBar').fadeIn('slow');
     }
 
     if (event._embedded.venues[0].name != undefined) //error handling
@@ -483,7 +504,7 @@ function addMarker(map, event) {
       $('#eventName').text(event.name); 
 
       //event date & time in Universal Time Coordinated
-      $('#eventTime').text('Datetime: '+ event.dates.start.dateTime); 
+      $('#eventTime').text('Date and time: '+ event.dates.start.dateTime.slice(0, 10) + " " + event.dates.start.dateTime.slice(10 + Math.abs(0))); 
 
       if($('#sideBar').has("#ticketLink")) { 
         $('#ticketLink').remove();
