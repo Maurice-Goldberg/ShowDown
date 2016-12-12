@@ -388,6 +388,13 @@ function initAutocomplete() {
     mapTypeId: 'roadmap'
   });
 
+  //Make Re-Center button take user back to aerial view of the entire U.S. -- doesn't work currently
+  document.getElementById("reCenter").addEventListener("click", function() {
+    map.center = {lat: 38, lng: -97};
+    map.zoom = 4;
+    map.mapTypeId = 'roadmap';
+  });
+
   // Create the search box and link it to the UI element. But allow searchbox to be outside map
   var searchBox = new google.maps.places.SearchBox(document.getElementById('pac-input'));
 
@@ -590,6 +597,13 @@ function initMap(json){
   var map = new google.maps.Map(mapDiv, {
     center: new google.maps.LatLng(38, -97),
     zoom: 4
+  });
+
+  //Make Re-Center button take user back to aerial view of the entire U.S. -- doesn't work currently
+  document.getElementById("reCenter").addEventListener("click", function() {
+    map.center = {lat: 38, lng: -97};
+    map.zoom = 4;
+    map.mapTypeId = 'roadmap';
   });
 
   for(var i=0; i<json.page.totalElements; i++) {

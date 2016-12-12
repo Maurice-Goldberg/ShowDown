@@ -20,9 +20,10 @@
 
     <div id = "MainWrap" ng-app="showDown" ng-controller="showDownController" align="center">
 
-    <div id="saveButtons">
-      <button type="submit" id="#savedShows" class="btn btn-primary"  style="float: left;" ng-click="seeSavedShows()">Saved Shows</button>
-      <button type="submit" class="btn btn-primary"  style="float: left;" ng-click="clearSaved()">Clear Saved</button>
+    <div id="buttons">
+      <button type="submit" id="savedShows" class="btn btn-primary"  style="float: left;" ng-click="seeSavedShows()">Saved Shows</button>
+      <button type="submit" id="clearSaved" class="btn btn-primary"  style="float: left;" ng-click="clearSaved()">Clear Saved</button>
+      <button type="submit" id="reCenter" class="btn btn-primary" style="float: left;">Re-Center</button>
     </div>
         <input id="pac-input" class="controls" type="text" placeholder="Enter Location...">
         <input id="artistSearch" class="controls" type="text" placeholder="Enter Artist..." hidden>

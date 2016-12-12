@@ -197,10 +197,24 @@ label {
   display: inline-block;
 }
 
-#saveButtons {
+#buttons {
   position: absolute;
   top: 10px;
   left: 10px;
+}
+
+/*recenter button*/
+#reCenter {
+  position: absolute;
+  top: 45px;
+  left: 0px;
+}
+
+/*clearSaved button*/
+#clearSaved {
+  position: absolute;
+  left: 125px;
+  top: 0px;
 }
 
 #find{
