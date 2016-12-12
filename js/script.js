@@ -165,9 +165,6 @@ $(document).ready(function(){
 
   $('#sideBar').hide();
   $('#musicPlayer').hide();
-  $('#map').hide();
-  $('#map').removeClass('hidden');
-  $('#map').fadeIn('slow');
 
   /** dropdown selection control **/
   $('#categoryDropdown').on('change', function() {
@@ -176,13 +173,17 @@ $(document).ready(function(){
       $('#find').animate({
         left: "-=195",
       }, 750);
-      $('#calendarForm').fadeOut('slow');
+      $('#pac-input').hide();
+      $('#artistSearch').show();
+      $('#calendarForm').fadeOut(1000);
     }
     else
     {
       $('#find').animate({
         left: "+=195",
       }, 750);
+      $('#artistSearch').hide();
+      $('#pac-input').show();
       $('#calendarForm').fadeIn(1250);
       $('#artistSearch').val(''); //empty the input field so that autocomplete map loads
       initAutocomplete(); //load autocomplete map
@@ -267,6 +268,8 @@ $(document).ready(function(){
       {
         $('#sideBar').fadeOut('slow');
         $('#musicPlayer').fadeOut('slow');
+        $('#sideBar').addClass('hidden');
+        $('#musicPlayer').addClass('hidden');
         var locationInfo = $('#pac-input').val();
         if (locationInfo == "") //empty search term
         {
@@ -339,7 +342,6 @@ $(document).ready(function(){
         var searchBox = new google.maps.places.SearchBox(input);
 
         /** user can only use autocomplete result **/
-
         google.maps.event.addDomListener(input,'keydown',function(e){
          if(e.keyCode===13 && !e.triggered){ 
            google.maps.event.trigger(this,'keydown',{keyCode:40}) 
@@ -441,10 +443,11 @@ function addMarker(map, event) {
     $('#musicPlayer').empty();
 
     // Stop currently playing players from previous search
-    stopPlayers(); 
+    stopPlayers();
 
     //show musicPlayer element if it's hidden
     if($('#musicPlayer').hasClass('hidden')) {
+      console.log('test1');
 
       //remove 'hidden' class (i.e. show element)
       $('#musicPlayer').removeClass('hidden');
@@ -474,6 +477,7 @@ function addMarker(map, event) {
 
     //show sideBar element if it's hidden
     if($('#sideBar').hasClass('hidden')) {
+      console.log("test2");
 
       //remove 'hidden' class (i.e. show element)
       $('#sideBar').removeClass('hidden');

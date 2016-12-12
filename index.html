@@ -6,17 +6,17 @@
   <link rel="icon" href="band.ico">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link href="https://fonts.googleapis.com/css?family=Permanent+Marker" rel="stylesheet">
-	<link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCgToID7VGftJesWx1S_Ax_UY3f4NAqBf4&libraries=places&callback=initAutocomplete"
 
   
   async defer>  </script>
-	<script type="text/javascript" src="js/script.js"></script>
+  <script type="text/javascript" src="js/script.js"></script>
 </head>
 <body>
-	<h1>ShowDown</h1>
+  <h1>ShowDown</h1>
 
     <div id = "MainWrap" ng-app="showDown" ng-controller="showDownController" align="center">
 
@@ -24,20 +24,20 @@
       <button type="submit" id="#savedShows" class="btn btn-primary"  style="float: left;" ng-click="seeSavedShows()">Saved Shows</button>
       <button type="submit" class="btn btn-primary"  style="float: left;" ng-click="clearSaved()">Clear Saved</button>
     </div>
-      	<input id="pac-input" class="controls" type="text" placeholder="Enter Location...">
+        <input id="pac-input" class="controls" type="text" placeholder="Enter Location...">
         <input id="artistSearch" class="controls" type="text" placeholder="Enter Artist..." hidden>
 
 
-      	<select id="categoryDropdown" class="form-control" ng-model="category" ng-change="changeOptionSelected()">
-      		<option selected value = "City">Location</option>
+        <select id="categoryDropdown" class="form-control" ng-model="category" ng-change="changeOptionSelected()">
+          <option selected value = "City">Location</option>
           <option value = "Artist">Artist</option>
-      	</select>
+        </select>
 
-      	<form id="calendarForm" action="#" class="ws-validate">
-      		<div class="form-row show-inputbtns">
-      			<input id="calendarBox" type="date" data-date-inline-picker="false" data-date-open-on-focus="true" />
-      		</div>
-      	</form>
+        <form id="calendarForm" action="#" class="ws-validate">
+          <div class="form-row show-inputbtns">
+            <input id="calendarBox" type="date" data-date-inline-picker="false" data-date-open-on-focus="true" />
+          </div>
+        </form>
 
         <button id="find" class="btn btn-info">Search</button>
 
@@ -56,7 +56,7 @@
       <div id="savedShows"></div>
     
 
-	<div id="map" class="hidden"></div>
+  <div id="map"></div>
  
 </body>
 </html>
