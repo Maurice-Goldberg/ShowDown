@@ -3,12 +3,14 @@ var attractionID;
 var apiKey = 'AIzaSyCgToID7VGftJesWx1S_Ax_UY3f4NAqBf4';
 var latitude;
 var longitude;
+var viewingSavedShows = false;
 
 // ============= ANGULAR =============
 var app = angular.module('showDown', []);
 app.controller('showDownController', ['$scope', '$http', '$compile',  function($scope, $http, $compile) {
 
   $scope.category = 'City';
+  $scope.savedMode = false; 
 
   $scope.changeOptionSelected = function(){
     console.log('changing selected option.');
@@ -23,9 +25,84 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
     alert("Show successfully saved.");
   }; 
 
+  $scope.delete = function() {
+    if($scope.savedMode == true){
+
+      var id = selectedMarker['id'];
+
+      if(localStorage.getItem(id) == null){
+        alert('Cannot delete this show. It is not currently saved!')
+      }
+      else {
+        $('#sideBar').fadeOut('slow');
+        $('#musicPlayer').fadeOut('slow');
+        $('#sideBar').addClass('hidden');
+        $('#musicPlayer').addClass('hidden');
+
+        localStorage.removeItem(id); 
+
+        var event = 0;
+        eventList = []; 
+
+        for(var i in localStorage){
+          event = JSON.parse(localStorage[i]); 
+          eventList.push(event);
+        }
+
+        if(eventList.length == 0){
+          var mapDiv = document.getElementById('map');
+          var map = new google.maps.Map(mapDiv, {
+            center: new google.maps.LatLng(38, -97),
+            zoom: 4
+          });
+          alert('Last show deleted!');
+        }
+        else{
+          var mapDiv = document.getElementById('map');
+          var map = new google.maps.Map(mapDiv, {
+            center: new google.maps.LatLng(38, -97),
+            zoom: 4
+          });
+          for(var i = 0; i < eventList.length; i++){
+            event = eventList[i];
+            addMarker(map, event);
+          }
+          alert('Show successfully deleted!');
+        }
+      }
+    }
+    else{
+      alert('Must view saved shows to remove a show.');
+    }
+  };
+
   $scope.clearSaved = function(){
-    localStorage.clear();
-    alert("Saved shows cleared.");
+
+    var event = 0;
+    var eventList = []; 
+
+    for(var i in localStorage){
+      event = JSON.parse(localStorage[i]); 
+      eventList.push(event);
+    }
+
+    if(eventList == 0){
+      alert('No shows to delete!')
+    }
+    else{
+      localStorage.clear();
+      $('#sideBar').fadeOut('slow');
+      $('#musicPlayer').fadeOut('slow');
+      $('#sideBar').addClass('hidden');
+      $('#musicPlayer').addClass('hidden');
+
+      var mapDiv = document.getElementById('map');
+          var map = new google.maps.Map(mapDiv, {
+          center: new google.maps.LatLng(38, -97),
+          zoom: 4
+      });
+      alert("Saved shows cleared.");
+    }
   };
 
   $scope.seeSavedShows = function(){
@@ -42,6 +119,14 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
       alert("No shows saved.");
     }
     else{
+
+      $('#sideBar').fadeOut('slow');
+      $('#musicPlayer').fadeOut('slow');
+      $('#sideBar').addClass('hidden');
+      $('#musicPlayer').addClass('hidden');
+
+      viewingSavedShows = true; 
+      $scope.savedMode = true; 
       var mapDiv = document.getElementById('map');
       var map = new google.maps.Map(mapDiv, {
         center: new google.maps.LatLng(38, -97),
@@ -80,6 +165,71 @@ var stopPlayers = function() {
     }
   }
 }; 
+
+// function called to find artist
+var getArtistData = function(artistName) {
+      
+      $('#sideBar').fadeOut('slow');
+      $('#musicPlayer').fadeOut('slow');
+      $('#sideBar').addClass('hidden');
+      $('#musicPlayer').addClass('hidden');
+      /* get attraction ID from artistName */
+      $.ajax({
+        type:"GET",
+        url:"https://app.ticketmaster.com/discovery/v2/attractions.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&keyword="
+        +artistName + "&size="+500,
+      // async:true,
+      dataType: "json",
+      success: function(json) {
+          for (var i = 0; i < json.page.totalElements; i++)
+          {
+            if (json._embedded.attractions[i].name == artistName)
+            {
+              attractionID = json._embedded.attractions[i].id;
+              break;
+            }
+          } 
+
+          if (attractionID != undefined) //valid artist name input
+          {
+            var todayDate = getCurrentDate();
+            /* get events with attraction(artist) ID */
+            $.ajax({
+              type: "GET",
+              url: "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&attractionId="+
+            attractionID+ "&size="+500 + "&startDateTime="+todayDate+"T00:00:00Z", //add end date
+            // async:true,
+            dataType: "json",
+            success: function(json) {
+              console.log(json);
+              if (json.page.totalElements == 0) //no events
+              {
+                alert("No events found.");
+              }
+              else
+              {
+                initMap(json);
+              }
+              
+              attractionID = undefined;
+              //some sort of drawLines(json) function should be called here
+            },
+            error: function(xhr, status, err) {
+              console.log(err);
+            }
+          });
+          }
+          else //invalid artist name input
+          {
+            alert("Please input a valid artist name.");
+          }          
+          
+        }, 
+      error: function(xhr, status, err) {
+          console.log(err);
+      }
+    });
+  }; 
 
 // ============= SPOTIFY FUNCTIONS =============
 // Gets top tracks for artist ID, then appends players
@@ -138,7 +288,7 @@ var searchForTopTracks = function (artistID) {
 }; 
 
 // Searches for an artist on Spotify, returns that artist's ID 
-var searchForArtist = function (query) {
+var searchForArtist = function (query, mode) {
   $.ajax({
     url: 'https://api.spotify.com/v1/search',
     data: {
@@ -147,11 +297,26 @@ var searchForArtist = function (query) {
     },
     success: function (response) { 
             //error handling
-            if (response['artists']['items'][0] != undefined)
-            {
-              artistCount++;
-              searchForTopTracks(String(response['artists']['items'][0]['id']));
+
+            if(mode == 0){
+              if (response['artists']['items'][0] != undefined)
+              {
+                artistCount++;
+                searchForTopTracks(String(response['artists']['items'][0]['id']));
+              }
             }
+            else{
+              var listOfPossibleArtists = response['artists']['items']; 
+              if(listOfPossibleArtists.length == 0){
+                alert('No artist found named \'' + query + '\'. Please type the artist\'s full name.');
+              }
+              else{
+                var name = (response['artists']['items'][0]['name']);
+                getArtistData(name);
+              }
+
+            }
+
           }
         });
 };
@@ -195,78 +360,22 @@ $(document).ready(function(){
     inputDate = this.value;
   });
 
+
   // ======= Artist and Location Search ====== //
 
   //make both artist and location search triggered by search button
-  $('#find').click(function(e){
+  /*$('#find').click(function(e) {
     e.preventDefault();
     var artistName = $('#artistSearch').val();
     if (artistName != "") //if searching for an artist
     {
-      $('#sideBar').fadeOut('slow');
-      $('#musicPlayer').fadeOut('slow');
-      $('#sideBar').addClass('hidden');
-      $('#musicPlayer').addClass('hidden');
-      /* get attraction ID from artistName */
-      $.ajax({
-        type:"GET",
-        url:"https://app.ticketmaster.com/discovery/v2/attractions.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&keyword="
-        +artistName + "&size="+500,
-      // async:true,
-      dataType: "json",
-      success: function(json) {
-        for (var i = 0; i < json.page.totalElements; i++)
-        {
-          if (json._embedded.attractions[i].name == artistName)
-          {
-            attractionID = json._embedded.attractions[i].id;
-            break;
-          }
-        } 
-
-        if (attractionID != undefined) //valid artist name input
-        {
-          var todayDate = getCurrentDate();
-          /* get events with attraction(artist) ID */
-          $.ajax({
-            type: "GET",
-            url: "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&attractionId="+
-          attractionID+ "&size="+500 + "&startDateTime="+todayDate+"T00:00:00Z", //add end date
-          // async:true,
-          dataType: "json",
-          success: function(json) {
-            console.log(json);
-            if (json.page.totalElements == 0) //no events
-            {
-              alert("No events found.");
-            }
-            else
-            {
-              initMap(json);
-            }
-            
-            attractionID = undefined;
-            //some sort of drawLines(json) function should be called here
-          },
-          error: function(xhr, status, err) {
-            console.log(err);
-          }
-        });
-        }
-        else //invalid artist name input
-        {
-          alert("Please input a valid artist name.");
-        }          
-        
-      }, 
-      error: function(xhr, status, err) {
-        console.log(err);
-      }
-    });
-    } //if end
-
+      
+      // searchForArtist finds the artist on spotify then adds the markers
+      searchForArtist(artistName, 1);
+    }
     else //searching by location
     {
+
       var markers = [];
       var places = searchBox.getPlaces();
 
@@ -328,10 +437,10 @@ $(document).ready(function(){
         alert("Please input a location search term!");
       }
 
-      /** if 3 arguments with 2 commas, finding city **/
+       if 3 arguments with 2 commas, finding city 
       if ((locationInfo.match(/,/g)||[]).length == 2)
       {
-        /** use lat, lng search in TM API **/
+         use lat, lng search in TM API 
         $.ajax({
           type:"GET",
           url:"https://app.ticketmaster.com/discovery/v2/events.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&latlong="
@@ -355,10 +464,10 @@ $(document).ready(function(){
           }
         });
       }
-      /** if 5 arguments with 4 commas, finding venue **/
+       if 5 arguments with 4 commas, finding venue 
       // else if((locationInfo.match(/,/g)||[]).length == 4)
       // {
-      //   /** get first argument which is venue name **/
+      //   // get first argument which is venue name 
       //   var arr = locationInfo.split(",");
       //   var venueName = arr.splice(0,1).join("");
 
@@ -367,7 +476,7 @@ $(document).ready(function(){
       //   alert(stateCode);
       // }
       
-      /** for other numbers of arguments **/ 
+       for other numbers of arguments 
       else 
       {
         alert("Only input Cities or Venues.");
@@ -375,9 +484,8 @@ $(document).ready(function(){
 
     }
 
-  });
+  }); */
 });
-
 
 
 /** Draw Map on Load **/
@@ -406,6 +514,11 @@ function initAutocomplete() {
   //make location search triggered by enter key
   google.maps.event.addDomListener(document.getElementById('pac-input'), 'keydown', function(e) { 
     if (e.keyCode == 13) { 
+
+      var scope = angular.element($("#MainWrap")).scope();
+        scope.$apply(function(){
+        scope.savedMode = false;
+      }); 
       e.preventDefault();
 
       var markers = [];
@@ -524,70 +637,16 @@ function initAutocomplete() {
       var artistName = $('#artistSearch').val();
       if (artistName != "") //if searching for an artist
       {
-        $('#sideBar').fadeOut('slow');
-        $('#musicPlayer').fadeOut('slow');
-        $('#sideBar').addClass('hidden');
-        $('#musicPlayer').addClass('hidden');
-        /* get attraction ID from artistName */
-        $.ajax(
-        {
-          type:"GET",
-          url:"https://app.ticketmaster.com/discovery/v2/attractions.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&keyword="
-          +artistName + "&size="+500,
-          // async:true,
-          dataType: "json",
-          success: function(json)
-          {
-            for (var i = 0; i < json.page.totalElements; i++)
-            {
-              if (json._embedded.attractions[i].name == artistName)
-              {
-                attractionID = json._embedded.attractions[i].id;
-                break;
-              }
-            } 
-
-            if (attractionID != undefined) //valid artist name input
-            {
-              var todayDate = getCurrentDate();
-              /* get events with attraction(artist) ID */
-              $.ajax({
-                  type: "GET",
-                  url: "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&attractionId="+
-                attractionID+ "&size="+500 + "&startDateTime="+todayDate+"T00:00:00Z", //add end date
-                // async:true,
-                dataType: "json",
-                success: function(json) {
-                  console.log(json);
-                  if (json.page.totalElements == 0) //no events
-                  {
-                    alert("No events found.");
-                  }
-                  else
-                  {
-                    initMap(json);
-                  }
-                  
-                  attractionID = undefined;
-                  //some sort of drawLines(json) function should be called here
-                },
-                error: function(xhr, status, err) {
-                  console.log(err);
-                }
-              });
-            }
-            else //invalid artist name input
-            {
-              alert("Please input a valid artist name.");
-            }           
-          }, 
-          error: function(xhr, status, err) {
-            console.log(err);
-          }
+        var scope = angular.element($("#MainWrap")).scope();
+        scope.$apply(function(){
+          scope.savedMode = false;
         });
-      }
+        viewingSavedShows = false; 
+        searchForArtist(artistName, 1); 
+      } 
     }
-  });//if end      
+
+  });     
 };
 
 
@@ -654,7 +713,7 @@ function addMarker(map, event) {
       console.log(artists)
 
       for(var i = 0; i < artists.length; i++){
-        searchForArtist(artists[i]);
+        searchForArtist(artists[i], 0);
       }
     }
     
@@ -759,6 +818,7 @@ function addMarker(map, event) {
 
 /** initMap for location search **/
 function initMapLocationSearch(json){
+  viewingSavedShows = false;
   var mapDiv = document.getElementById('map');
   var map = new google.maps.Map(mapDiv, {
     // center at the searched city latitude, longitude

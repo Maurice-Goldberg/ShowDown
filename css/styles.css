@@ -222,3 +222,15 @@ label {
   left: 1050px;
   top: 103px;
 }
+
+#removeSelected {
+  position: absolute;
+  left: 240px;
+  top: 0px;
+}
+
+#help {
+  position: absolute;
+  left: 1190px;
+  top: 0px;
+}
