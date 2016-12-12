@@ -197,10 +197,127 @@ $(document).ready(function(){
 
   // ======= Artist and Location Search ====== //
 
-  //make location search triggered by enter key
-  google.maps.event.addDomListener(document.getElementById('pac-input'), 'keydown', function(e) { 
-    if (e.keyCode == 13) { 
-      e.preventDefault();
+  //make both artist and location search triggered by search button
+  $('#find').click(function(e){
+    e.preventDefault();
+    var artistName = $('#artistSearch').val();
+    if (artistName != "") //if searching for an artist
+    {
+      $('#sideBar').fadeOut('slow');
+      $('#musicPlayer').fadeOut('slow');
+      $('#sideBar').addClass('hidden');
+      $('#musicPlayer').addClass('hidden');
+      /* get attraction ID from artistName */
+      $.ajax({
+        type:"GET",
+        url:"https://app.ticketmaster.com/discovery/v2/attractions.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&keyword="
+        +artistName + "&size="+500,
+      // async:true,
+      dataType: "json",
+      success: function(json) {
+        for (var i = 0; i < json.page.totalElements; i++)
+        {
+          if (json._embedded.attractions[i].name == artistName)
+          {
+            attractionID = json._embedded.attractions[i].id;
+            break;
+          }
+        } 
+
+        if (attractionID != undefined) //valid artist name input
+        {
+          var todayDate = getCurrentDate();
+          /* get events with attraction(artist) ID */
+          $.ajax({
+            type: "GET",
+            url: "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&attractionId="+
+          attractionID+ "&size="+500 + "&startDateTime="+todayDate+"T00:00:00Z", //add end date
+          // async:true,
+          dataType: "json",
+          success: function(json) {
+            console.log(json);
+            if (json.page.totalElements == 0) //no events
+            {
+              alert("No events found.");
+            }
+            else
+            {
+              initMap(json);
+            }
+            
+            attractionID = undefined;
+            //some sort of drawLines(json) function should be called here
+          },
+          error: function(xhr, status, err) {
+            console.log(err);
+          }
+        });
+        }
+        else //invalid artist name input
+        {
+          alert("Please input a valid artist name.");
+        }          
+        
+      }, 
+      error: function(xhr, status, err) {
+        console.log(err);
+      }
+    });
+    } //if end
+
+    else //searching by location
+    {
+      var markers = [];
+      var places = searchBox.getPlaces();
+
+      if (places.length == 0) {
+        return;
+      }
+
+      // Clear out the old markers.
+      markers.forEach(function(marker) {
+        marker.setMap(null);
+      });
+      markers = [];
+
+      // For each place, get the icon, name and location.
+      var bounds = new google.maps.LatLngBounds();
+      places.forEach(function(place) {
+        if (!place.geometry) {
+          console.log("Returned place contains no geometry");
+          return;
+        }
+        var icon = {
+          url: place.icon,
+          size: new google.maps.Size(71, 71),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(17, 34),
+          scaledSize: new google.maps.Size(25, 25)
+        };
+
+        // Create a marker for each place.
+        markers.push(new google.maps.Marker({
+          map: map,
+          icon: icon,
+          title: place.name,
+          position: place.geometry.location
+        }));
+
+        if (place.geometry.viewport) {
+          // Only geocodes have viewport.
+          bounds.union(place.geometry.viewport);
+        } else {
+          bounds.extend(place.geometry.location);
+        }
+
+        latitude = place.geometry.location.lat(); //testing
+        longitude = place.geometry.location.lng(); //testing
+        console.log(latitude);
+        console.log(longitude);
+      });
+      map.fitBounds(bounds);
+
+
       $('#sideBar').fadeOut('slow');
       $('#musicPlayer').fadeOut('slow');
       $('#sideBar').addClass('hidden');
@@ -255,12 +372,148 @@ $(document).ready(function(){
       {
         alert("Only input Cities or Venues.");
       }
+
+    }
+
+  });
+});
+
+
+
+/** Draw Map on Load **/
+function initAutocomplete() {
+  var map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 38, lng: -97},
+    zoom: 4,
+    mapTypeId: 'roadmap'
+  });
+
+  // Create the search box and link it to the UI element. But allow searchbox to be outside map
+  var searchBox = new google.maps.places.SearchBox(document.getElementById('pac-input'));
+
+  // Bias the SearchBox results towards current map's viewport.
+  map.addListener('bounds_changed', function() {
+    searchBox.setBounds(map.getBounds());
+  });
+
+  //make location search triggered by enter key
+  google.maps.event.addDomListener(document.getElementById('pac-input'), 'keydown', function(e) { 
+    if (e.keyCode == 13) { 
+      e.preventDefault();
+
+      var markers = [];
+      var places = searchBox.getPlaces();
+
+      if (places.length == 0) {
+        return;
+      }
+
+      // Clear out the old markers.
+      markers.forEach(function(marker) {
+        marker.setMap(null);
+      });
+      markers = [];
+
+      // For each place, get the icon, name and location.
+      var bounds = new google.maps.LatLngBounds();
+      places.forEach(function(place) {
+        if (!place.geometry) {
+          console.log("Returned place contains no geometry");
+          return;
+        }
+        var icon = {
+          url: place.icon,
+          size: new google.maps.Size(71, 71),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(17, 34),
+          scaledSize: new google.maps.Size(25, 25)
+        };
+
+        // Create a marker for each place.
+        markers.push(new google.maps.Marker({
+          map: map,
+          icon: icon,
+          title: place.name,
+          position: place.geometry.location
+        }));
+
+        if (place.geometry.viewport) {
+          // Only geocodes have viewport.
+          bounds.union(place.geometry.viewport);
+        } else {
+          bounds.extend(place.geometry.location);
+        }
+
+        latitude = place.geometry.location.lat(); //testing
+        longitude = place.geometry.location.lng(); //testing
+        console.log(latitude);
+        console.log(longitude);
+
+
+      });
+      map.fitBounds(bounds);
+
+      var locationInfo = $('#pac-input').val();
+      if (locationInfo == "") //empty search term
+      {
+        alert("Please input a location search term!");
+      }
+
+      $('#sideBar').fadeOut('slow');
+      $('#musicPlayer').fadeOut('slow');
+      $('#sideBar').addClass('hidden');
+      $('#musicPlayer').addClass('hidden');
+
+      /** if 3 arguments with 2 commas, finding city **/
+      if ((locationInfo.match(/,/g)||[]).length == 2)
+      {
+        /** use lat, lng search in TM API **/
+        $.ajax({
+          type:"GET",
+          url:"https://app.ticketmaster.com/discovery/v2/events.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&latlong="
+          +latitude+ ","+longitude+ "&size="+500+ "&startDateTime="+inputDate+"T00:00:00Z&endDateTime=" 
+          + inputDate+ "T23:59:59Z"+ "&radius="+10,
+          // async:true,
+          dataType: "json",
+          success: function(json){
+            console.log(json); 
+            if (json.page.totalElements == 0) //no events
+            {
+              alert("No events found.");
+            }
+            else
+            {
+              initMapLocationSearch(json); 
+            }
+          },
+          error: function(xhr, status, err) {
+            console.log(err);
+          }
+        });
+      }
+      /** if 5 arguments with 4 commas, finding venue **/
+      // else if((locationInfo.match(/,/g)||[]).length == 4)
+      // {
+      //   /** get first argument which is venue name **/
+      //   var arr = locationInfo.split(",");
+      //   var venueName = arr.splice(0,1).join("");
+
+      //   var stateCode = locationInfo.split(",").splice(3,4).join("");
+      //   alert(venueName);
+      //   alert(stateCode);
+      // }
+      
+      /** for other numbers of arguments **/ 
+      else 
+      {
+        alert("Only input Cities or Venues.");
+      }
     }
   });
 
   //make artist search triggered by enter key
   google.maps.event.addDomListener(document.getElementById('artistSearch'), 'keydown', function(e) { 
-    if (e.keyCode == 13) { 
+    if (e.keyCode == 13) {
       var artistName = $('#artistSearch').val();
       if (artistName != "") //if searching for an artist
       {
@@ -327,262 +580,29 @@ $(document).ready(function(){
         });
       }
     }
-  });//if end
-
-  //make both artist and location search triggered by search button
-  $('#find').click(function(e){
-    e.preventDefault();
-    var artistName = $('#artistSearch').val();
-      if (artistName != "") //if searching for an artist
-      {
-        $('#sideBar').fadeOut('slow');
-        $('#musicPlayer').fadeOut('slow');
-        $('#sideBar').addClass('hidden');
-        $('#musicPlayer').addClass('hidden');
-        /* get attraction ID from artistName */
-        $.ajax({
-          type:"GET",
-          url:"https://app.ticketmaster.com/discovery/v2/attractions.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&keyword="
-          +artistName + "&size="+500,
-        // async:true,
-        dataType: "json",
-        success: function(json) {
-          for (var i = 0; i < json.page.totalElements; i++)
-          {
-            if (json._embedded.attractions[i].name == artistName)
-            {
-              attractionID = json._embedded.attractions[i].id;
-              break;
-            }
-          } 
-
-          if (attractionID != undefined) //valid artist name input
-          {
-            var todayDate = getCurrentDate();
-            /* get events with attraction(artist) ID */
-            $.ajax({
-              type: "GET",
-              url: "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&attractionId="+
-            attractionID+ "&size="+500 + "&startDateTime="+todayDate+"T00:00:00Z", //add end date
-            // async:true,
-            dataType: "json",
-            success: function(json) {
-              console.log(json);
-              if (json.page.totalElements == 0) //no events
-              {
-                alert("No events found.");
-              }
-              else
-              {
-                initMap(json);
-              }
-              
-              attractionID = undefined;
-              //some sort of drawLines(json) function should be called here
-            },
-            error: function(xhr, status, err) {
-              console.log(err);
-            }
-          });
-          }
-          else //invalid artist name input
-          {
-            alert("Please input a valid artist name.");
-          }          
-          
-        }, 
-        error: function(xhr, status, err) {
-          console.log(err);
-        }
-      });
-      } //if end
-
-      else //searching by location
-      {
-        $('#sideBar').fadeOut('slow');
-        $('#musicPlayer').fadeOut('slow');
-        $('#sideBar').addClass('hidden');
-        $('#musicPlayer').addClass('hidden');
-        var locationInfo = $('#pac-input').val();
-        if (locationInfo == "") //empty search term
-        {
-          alert("Please input a location search term!");
-        }
-
-        /** if 3 arguments with 2 commas, finding city **/
-        if ((locationInfo.match(/,/g)||[]).length == 2)
-        {
-          /** use lat, lng search in TM API **/
-          $.ajax({
-            type:"GET",
-            url:"https://app.ticketmaster.com/discovery/v2/events.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&latlong="
-            +latitude+ ","+longitude+ "&size="+500+ "&startDateTime="+inputDate+"T00:00:00Z&endDateTime=" 
-            + inputDate+ "T23:59:59Z"+ "&radius="+10,
-            // async:true,
-            dataType: "json",
-            success: function(json){
-              console.log(json); 
-              if (json.page.totalElements == 0) //no events
-              {
-                alert("No events found.");
-              }
-              else
-              {
-                initMapLocationSearch(json); 
-              }
-            },
-            error: function(xhr, status, err) {
-              console.log(err);
-            }
-          });
-        }
-        /** if 5 arguments with 4 commas, finding venue **/
-        // else if((locationInfo.match(/,/g)||[]).length == 4)
-        // {
-        //   /** get first argument which is venue name **/
-        //   var arr = locationInfo.split(",");
-        //   var venueName = arr.splice(0,1).join("");
-
-        //   var stateCode = locationInfo.split(",").splice(3,4).join("");
-        //   alert(venueName);
-        //   alert(stateCode);
-        // }
-        
-        /** for other numbers of arguments **/ 
-        else 
-        {
-          alert("Only input Cities or Venues.");
-        }
-
-      }
-
-    });
-});
+  });//if end      
+};
 
 
-
-/** Draw Map on Load **/
-function initAutocomplete() {
-  var map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 38, lng: -97},
-    zoom: 4,
-    mapTypeId: 'roadmap'
+/** initMap for artist search **/
+function initMap(json){
+  var mapDiv = document.getElementById('map');
+  var map = new google.maps.Map(mapDiv, {
+    center: new google.maps.LatLng(38, -97),
+    zoom: 4
   });
 
-        // Create the search box and link it to the UI element. But allow searchbox to be outside map
-        var input = document.getElementById('pac-input');
-        var searchBox = new google.maps.places.SearchBox(input);
+  for(var i=0; i<json.page.totalElements; i++) {
+    addMarker(map, json._embedded.events[i]);
+  }
+};
 
-//trying to disable enter key
-/*
-        input.keypress(function(event){
-          if (event.keyCode == 10 || event.keyCode == 13) {
-            event.preventDefault();
-          }
-        });
-*/
-
-        /** user can only use autocomplete result **/
-        /*
-        google.maps.event.addDomListener(input,'keydown',function(e){
-         if(e.keyCode===13 && !e.triggered){ 
-           google.maps.event.trigger(this,'keydown',{keyCode:40})
-           google.maps.event.trigger(this,'keydown',{keyCode:13,triggered:true}) 
-         }
-        });
-        */
-        /*this prevents enter key from doing anything*/
-        /*
-        google.maps.event.addDomListener(input, 'keydown', function(e) { 
-          if (e.keyCode == 13 || e.keyCode == 10) { 
-            e.preventDefault();
-          }
-        });*/
-
-        // Bias the SearchBox results towards current map's viewport.
-        map.addListener('bounds_changed', function() {
-          searchBox.setBounds(map.getBounds());
-        });
-
-        var markers = [];
-        // Listen for the event fired when the user selects a prediction and retrieve
-        // more details for that place.
-        searchBox.addListener('places_changed', function() {
-          var places = searchBox.getPlaces();
-
-          if (places.length == 0) {
-            return;
-          }
-
-          // Clear out the old markers.
-          markers.forEach(function(marker) {
-            marker.setMap(null);
-          });
-          markers = [];
-
-          // For each place, get the icon, name and location.
-          var bounds = new google.maps.LatLngBounds();
-          places.forEach(function(place) {
-            if (!place.geometry) {
-              console.log("Returned place contains no geometry");
-              return;
-            }
-            var icon = {
-              url: place.icon,
-              size: new google.maps.Size(71, 71),
-              origin: new google.maps.Point(0, 0),
-              anchor: new google.maps.Point(17, 34),
-              scaledSize: new google.maps.Size(25, 25)
-            };
-
-            // Create a marker for each place.
-            markers.push(new google.maps.Marker({
-              map: map,
-              icon: icon,
-              title: place.name,
-              position: place.geometry.location
-            }));
-
-            if (place.geometry.viewport) {
-              // Only geocodes have viewport.
-              bounds.union(place.geometry.viewport);
-            } else {
-              bounds.extend(place.geometry.location);
-            }
-
-          latitude = place.geometry.location.lat(); //testing
-          longitude = place.geometry.location.lng(); //testing
-          console.log(latitude);
-          console.log(longitude);
-
-
-        });
-          map.fitBounds(bounds);
-        });
-      };
-
-
-      /** initMap for artist search **/
-      function initMap(json){
-        var mapDiv = document.getElementById('map');
-        var map = new google.maps.Map(mapDiv, {
-          center: new google.maps.LatLng(38, -97),
-          zoom: 4
-        });
-
-        for(var i=0; i<json.page.totalElements; i++) {
-          addMarker(map, json._embedded.events[i]);
-        }
-
-
-      };
-
-      function addMarker(map, event) {
-        var marker = new google.maps.Marker({
-          position: new google.maps.LatLng(event._embedded.venues[0].location.latitude, event._embedded.venues[0].location.longitude),
-          map: map
-        });
-        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+function addMarker(map, event) {
+  var marker = new google.maps.Marker({
+    position: new google.maps.LatLng(event._embedded.venues[0].location.latitude, event._embedded.venues[0].location.longitude),
+    map: map
+  });
+  marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
 
   // marker clicked 
   google.maps.event.addListener(marker, 'click', function() {
