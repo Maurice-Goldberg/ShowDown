@@ -25,6 +25,10 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
     alert("Show successfully saved.");
   }; 
 
+  $scope.helpAlert = function() {
+    alert('Scroll Down to see the instructions!');
+  }; 
+
   $scope.delete = function() {
     if($scope.savedMode == true){
 

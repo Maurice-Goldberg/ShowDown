@@ -234,3 +234,9 @@ label {
   left: 1190px;
   top: 0px;
 }
+
+#helpInfo {
+  position: absolute;
+  left: 285px;
+  top: 650px;
+}
