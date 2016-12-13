@@ -4,6 +4,7 @@ var apiKey = 'AIzaSyCgToID7VGftJesWx1S_Ax_UY3f4NAqBf4';
 var latitude;
 var longitude;
 var viewingSavedShows = false;
+var markers;
 
 // ============= ANGULAR =============
 var app = angular.module('showDown', []);
@@ -168,6 +169,10 @@ var artistCount = 0;
 
 // this array will hold all the audio objects
 var audioVariables = [];
+
+// array for audio elements
+var audioElements = [];
+
 for(var i = 0; i < 200; i++){
   audioVariables.push(0);
 }
@@ -276,12 +281,24 @@ var searchForTopTracks = function (artistID) {
             var audioButton = document.createElement("button");
             audioButton.className = "btn btn-primary"
             audioButton.innerHTML = "<span class='glyphicon glyphicon-play'></span>"
+
+            audioElements.push(audioButton);
+
             audioButton.onclick = function() { 
               if(!audioVariables[curr].paused) {
                 audioVariables[curr].pause();
                 audioButton.innerHTML = "<span class='glyphicon glyphicon-play'></span>"
               }
               else{
+                // find any currently playing audio objects, pause them and change the innerHTML symbol to 'play'
+                for (var i = 0; i < current_global; i++)
+                {
+                  if (!audioVariables[i].paused)
+                  {
+                    audioVariables[i].pause();
+                    audioElements[i].innerHTML = "<span class='glyphicon glyphicon-play'></span>"
+                  }
+                }
                 audioVariables[curr].play();
                 audioButton.innerHTML = "<span class='glyphicon glyphicon-pause'></span>"
               }
@@ -669,6 +686,8 @@ function initAutocomplete() {
 
 /** initMap for artist search **/
 function initMap(json){
+
+  markers = []; // new marker array 
   var mapDiv = document.getElementById('map');
   var map = new google.maps.Map(mapDiv, {
     center: new google.maps.LatLng(38, -97),
@@ -694,8 +713,19 @@ function addMarker(map, event) {
   });
   marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
 
+
+  markers.push(marker); // add marker to markers array
+
+
   // marker clicked 
   google.maps.event.addListener(marker, 'click', function() {
+
+    // highlight selected marker
+    for (var j = 0; j < markers.length; j++) {
+      markers[j].setIcon("http://maps.google.com/mapfiles/ms/icons/red-dot.png");
+    }
+    marker.setIcon("http://maps.google.com/mapfiles/ms/icons/ltblue-dot.png");
+
 
     selectedMarker = event;
 
@@ -793,6 +823,10 @@ function addMarker(map, event) {
               'maxHeight': 500
             }));
           }
+          else
+          {
+            $('img#venuePhoto').attr('src','band.ico');
+          }
 
 
         //results.name for venue name (sometimes just an address)
@@ -835,6 +869,7 @@ function addMarker(map, event) {
 
 /** initMap for location search **/
 function initMapLocationSearch(json){
+  markers = []; //new marker array
   viewingSavedShows = false;
   var mapDiv = document.getElementById('map');
   var map = new google.maps.Map(mapDiv, {
