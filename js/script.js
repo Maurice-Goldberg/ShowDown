@@ -32,47 +32,56 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
   $scope.delete = function() {
     if($scope.savedMode == true){
 
-      var id = selectedMarker['id'];
+      if(selectedMarker != 0) {
 
-      if(localStorage.getItem(id) == null){
-        alert('Cannot delete this show. It is not currently saved!')
-      }
-      else {
-        $('#sideBar').fadeOut('slow');
-        $('#musicPlayer').fadeOut('slow');
-        $('#sideBar').addClass('hidden');
-        $('#musicPlayer').addClass('hidden');
+        var id = selectedMarker['id'];
 
-        localStorage.removeItem(id); 
-
-        var event = 0;
-        eventList = []; 
-
-        for(var i in localStorage){
-          event = JSON.parse(localStorage[i]); 
-          eventList.push(event);
+        if(localStorage.getItem(id) == null){
+          alert('Cannot delete this show. It is not currently saved!')
         }
+        else {
+          $('#sideBar').fadeOut('slow');
+          $('#musicPlayer').fadeOut('slow');
+          $('#sideBar').addClass('hidden');
+          $('#musicPlayer').addClass('hidden');
 
-        if(eventList.length == 0){
-          var mapDiv = document.getElementById('map');
-          var map = new google.maps.Map(mapDiv, {
-            center: new google.maps.LatLng(38, -97),
-            zoom: 4
-          });
-          alert('Last show deleted!');
-        }
-        else{
-          var mapDiv = document.getElementById('map');
-          var map = new google.maps.Map(mapDiv, {
-            center: new google.maps.LatLng(38, -97),
-            zoom: 4
-          });
-          for(var i = 0; i < eventList.length; i++){
-            event = eventList[i];
-            addMarker(map, event);
+          localStorage.removeItem(id); 
+
+          var event = 0;
+          eventList = []; 
+
+          for(var i in localStorage){
+            event = JSON.parse(localStorage[i]); 
+            eventList.push(event);
           }
-          alert('Show successfully deleted!');
+
+          if(eventList.length == 0){
+            var mapDiv = document.getElementById('map');
+            var map = new google.maps.Map(mapDiv, {
+              center: new google.maps.LatLng(38, -97),
+              zoom: 4
+            });
+
+            $scope.savedMode = false;
+            alert('Last show deleted!');
+          }
+          else{
+            var mapDiv = document.getElementById('map');
+            var map = new google.maps.Map(mapDiv, {
+              center: new google.maps.LatLng(38, -97),
+              zoom: 4
+            });
+            for(var i = 0; i < eventList.length; i++){
+              event = eventList[i];
+              addMarker(map, event);
+            }
+            alert('Show successfully deleted!');
+            selectedMarker = 0;
+          }
         }
+      }
+      else{
+        alert('Must click a saved show in order to remove it.');
       }
     }
     else{
@@ -107,9 +116,13 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
       });
       alert("Saved shows cleared.");
     }
+
+    selectedMarker = 0;
   };
 
   $scope.seeSavedShows = function(){
+
+    selectedMarker = 0;
 
     var event = 0;
     eventList = []; 
