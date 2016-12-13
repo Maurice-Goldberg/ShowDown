@@ -660,7 +660,7 @@ function initAutocomplete() {
       /** for other numbers of arguments **/ 
       else 
       {
-        alert("Only input Cities or Venues.");
+        alert("Only input Cities.");
       }
     }
   });
