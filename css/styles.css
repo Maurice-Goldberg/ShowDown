@@ -1,5 +1,6 @@
 body {
-  /* background-image: url('../audience.jpg'); */
+  animation-name: fade-in;
+  animation-duration: 1s;
   background-size: cover;
   background: #f7f7f7;
 }
@@ -45,11 +46,12 @@ div > p {
   top: 150px;
   left: 1000px;
   width: 265px;
-  height: 470px;
-  color: #000000;
-  background-color: #beebe9;
-  border-radius: 3px;
-  font: 'Josefin Sans', sans-serif;
+  height: 450px;
+  color: #393e46;
+  background-color: #929aab38;
+  border-radius: 5px;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 15px;
 }
 
 #musicPlayer {
@@ -58,14 +60,18 @@ div > p {
   left: 10px;
   width: 265px;
   height: auto;
-  border-radius: 3px;
-  background-color: #beebe9;
-  font: 'Josefin Sans', sans-serif;
+  border-radius: 5px;
+  color: #393e46;
+  background-color: #929aab38;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 15px;
 }
 
 /* Always set the map height explicitly to define the size of the div
 * element that contains the map. */
 #map {
+  animation-name: fade-in;
+  animation-duration: 3s;
   position: absolute;
   height: 440px;
   width: 706px;
@@ -105,8 +111,8 @@ html, body {
 }
 
 #pac-input:focus {
-  border-color: gray;
-  background: #e0e0e0;
+  border-color: rgb(167, 167, 167);
+  background: #e7e7e7;
 }
 
 .pac-container {
@@ -240,7 +246,7 @@ label {
 
 #help {
   position: absolute;
-  left: 1190px;
+  left: 1160%;
   top: 0px;
   background: #eeeeee;
   color: #393e46;
@@ -248,18 +254,18 @@ label {
   font-family: 'Josefin Sans', sans-serif;
 }
 
-#savedShows, #got-it {
+#savedShows, #got-it, #save-show, #audio-btn {
   background: #eeeeee;
   color: #393e46;
   border-color: #393e46;
   font-family: 'Josefin Sans', sans-serif;
 }
 
-#help:hover, #savedShows:hover, #got-it:hover {
+#help:hover, #savedShows:hover, #got-it:hover, #save-show:hover, #audio-btn:hover {
   background: #e0e0e0;
 }
 
-#help:active, #savedShows:active, #got-it:active {
+#help:active, #savedShows:active, #got-it:active, #save-show:active, #audio-btn:active {
   outline: none;
 }
 

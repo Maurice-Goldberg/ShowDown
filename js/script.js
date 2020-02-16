@@ -1,11 +1,11 @@
 var inputDate;
 var attractionID;
-var apiKey = 'AIzaSyARBeGQnoeVANAG1vkdYM3Tw7v1JQxaZfQ';
+// var apiKey = 'AIzaSyARBeGQnoeVANAG1vkdYM3Tw7v1JQxaZfQ';
 var latitude;
 var longitude;
 var viewingSavedShows = false;
 var markers;
-var darkModeMapStyling = [
+var mapStyling = [
   { elementType: 'geometry', stylers: [{ color: '#393e46'}] },
   { elementType: 'labels.text.stroke', stylers: [{ color: '#929aab'}] },
   { elementType: 'labels.text.fill', stylers: [{ color: '#eeeeee'}] },
@@ -141,7 +141,7 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
             var map = new google.maps.Map(mapDiv, {
               center: new google.maps.LatLng(38, -97),
               zoom: 4,
-              styles: darkModeMapStyling
+              styles: mapStyling
             });
 
             $scope.savedMode = false;
@@ -152,7 +152,7 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
             var map = new google.maps.Map(mapDiv, {
               center: new google.maps.LatLng(38, -97),
               zoom: 4,
-              styles: darkModeMapStyling
+              styles: mapStyling
             });
             for(var i = 0; i < eventList.length; i++){
               event = eventList[i];
@@ -196,7 +196,7 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
           var map = new google.maps.Map(mapDiv, {
           center: new google.maps.LatLng(38, -97),
           zoom: 4,
-          styles: darkModeMapStyling
+          styles: mapStyling
       });
       alert("Saved shows cleared.");
     }
@@ -232,7 +232,7 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
       var map = new google.maps.Map(mapDiv, {
         center: new google.maps.LatLng(38, -97),
         zoom: 4,
-        styles: darkModeMapStyling
+        styles: mapStyling
       });
       for(var i = 0; i < eventList.length; i++){
         event = eventList[i];
@@ -282,8 +282,8 @@ var getArtistData = function(artistName) {
    /* get attraction ID from artistName */
   $.ajax({
     type:"GET",
-    url:"https://app.ticketmaster.com/discovery/v2/attractions.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&keyword="
-    +artistName + "&size="+500,
+    url:"https://app.ticketmaster.com/discovery/v2/attractions.json?apikey=ORGlCRVJhpgYnGe7ANcn9JAJcsnAyn0e&keyword="
+    +artistName + "&size="+100,
     dataType: "json",
     success: function(json) {
       for (var i = 0; i < json.page.totalElements; i++)
@@ -301,8 +301,8 @@ var getArtistData = function(artistName) {
         /* get events with attraction(artist) ID */
         $.ajax({
           type: "GET",
-          url: "https://app.ticketmaster.com/discovery/v2/events.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&attractionId="+
-        attractionID+ "&size="+500 + "&startDateTime="+todayDate+"T00:00:00Z", 
+          url: "https://app.ticketmaster.com/discovery/v2/events.json?apikey=ORGlCRVJhpgYnGe7ANcn9JAJcsnAyn0e&attractionId="+
+        attractionID+ "&size="+100 + "&startDateTime="+todayDate+"T00:00:00Z", 
         dataType: "json",
         success: function(json) {
           console.log(json);
@@ -336,10 +336,14 @@ var getArtistData = function(artistName) {
 
 // ============= SPOTIFY FUNCTIONS =============
 // Gets top tracks for artist ID, then appends players
-var searchForTopTracks = function (artistID) {
 
+var accessToken = "BQDtup3Tmfaq6d1tAWlDpgKpTuaaq8m_OmHgArK7PRS53uIk4J1lXtZ_ZpUGkrMjq-giJ4FAiU8_Bjy9UDEFmQVptaWb_98PvRwOGSoVD_PlL8t-SGM7mVyuDO6GlCnpf6XgLUGxvlc_06VCylfmDAxiqKxeRtjfk3Aog5uF&refresh_token=AQDOeePustOEF44a4jAHpFIrhbPuzw6i2f--kwHHy-KDzJ-XgrMO_0Hkd_KL-YCC6jfeKilASGqDkU0MogmqJBKWsPHVsCHgZFLkUDUak1bZK6gnRzBm925qUn7zqT1rqMk"
+var searchForTopTracks = function (artistID) {
   $.ajax({
     url: 'https://api.spotify.com/v1/artists/' + artistID + '/top-tracks',
+    headers: {
+      'Authorization': 'Bearer ' + accessToken
+    },
     data: {
       country: 'US',
     },
@@ -361,6 +365,7 @@ var searchForTopTracks = function (artistID) {
 
       var audioButton = document.createElement("button");
       audioButton.className = "btn btn-primary"
+      audioButton.id = "audio-btn"
       audioButton.innerHTML = "<span class='glyphicon glyphicon-play'></span>"
 
       audioElements.push(audioButton);
@@ -396,13 +401,15 @@ var searchForTopTracks = function (artistID) {
 
     }
   });
-
 }; 
 
 // Searches for an artist on Spotify, returns that artist's ID 
 var searchForArtist = function (query, mode) {
   $.ajax({
     url: 'https://api.spotify.com/v1/search',
+    headers: {
+      'Authorization': 'Bearer ' + accessToken
+    },
     data: {
       q: query,
       type: 'artist'
@@ -480,7 +487,7 @@ function initAutocomplete() {
   var map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 38, lng: -97},
     zoom: 4,
-    styles: darkModeMapStyling,
+    styles: mapStyling,
     mapTypeId: 'roadmap'
   });
 
@@ -568,8 +575,8 @@ function initAutocomplete() {
             /** use lat, lng search in TM API **/
             $.ajax({
               type:"GET",
-              url:"https://app.ticketmaster.com/discovery/v2/events.json?apikey=VsVdNmwCso1hURORRbFKWLca5sLcAemO&latlong="
-              +latitude+ ","+longitude+ "&size="+500+ "&startDateTime="+inputDate+"T00:00:00Z&endDateTime=" 
+              url:"https://app.ticketmaster.com/discovery/v2/events.json?apikey=ORGlCRVJhpgYnGe7ANcn9JAJcsnAyn0e&latlong="
+              +latitude+ ","+longitude+ "&size="+100+ "&startDateTime="+inputDate+"T00:00:00Z&endDateTime=" 
               + inputDate+ "T23:59:59Z"+ "&radius="+10,
               dataType: "json",
               success: function(json){
@@ -637,7 +644,7 @@ function initMap(json){
   var map = new google.maps.Map(mapDiv, {
     center: new google.maps.LatLng(38, -97),
     zoom: 4,
-    styles: darkModeMapStyling
+    styles: mapStyling
   });
 
 
@@ -676,7 +683,6 @@ function addMarker(map, event) {
 
     //show musicPlayer element if it's hidden
     if($('#musicPlayer').hasClass('hidden')) {
-      console.log('test1');
 
       //remove 'hidden' class (i.e. show element)
       $('#musicPlayer').removeClass('hidden');
@@ -814,7 +820,7 @@ function initMapLocationSearch(json){
     // center at the searched city latitude, longitude
     center: new google.maps.LatLng(latitude,longitude),
     zoom: 10,
-    styles: darkModeMapStyling
+    styles: mapStyling
   });
   for(var i=0; i<json.page.totalElements; i++) {
     addMarker(map, json._embedded.events[i]);
