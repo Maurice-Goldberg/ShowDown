@@ -7,14 +7,13 @@ body {
 
 h1 {
   font-family: 'Josefin Sans', sans-serif;
-  /* font-family: 'Permanent Marker'; */
   font-size: 70px;
   color: #393e46;
   font-weight: bold;
   position: absolute;
   top: -8px;
-  left: 450px;
-  /*text-shadow: 0 3px 9px #d01aff;*/
+  left: 490px;
+  text-shadow: 0 3px 9px #929aab;
 }
 
 
@@ -254,18 +253,18 @@ label {
   font-family: 'Josefin Sans', sans-serif;
 }
 
-#savedShows, #got-it, #save-show, #audio-btn {
+#seeSavedShows, #got-it, #save-show, #audio-btn, #clearSaved, #removeSelected {
   background: #eeeeee;
   color: #393e46;
   border-color: #393e46;
   font-family: 'Josefin Sans', sans-serif;
 }
 
-#help:hover, #savedShows:hover, #got-it:hover, #save-show:hover, #audio-btn:hover {
+#help:hover, #savedShows:hover, #got-it:hover, #save-show:hover, #audio-btn:hover, #clearSaved:hover, #removeSelected:hover {
   background: #e0e0e0;
 }
 
-#help:active, #savedShows:active, #got-it:active, #save-show:active, #audio-btn:active {
+#help:active, #savedShows:active, #got-it:active, #save-show:active, #audio-btn:active, #clearSaved:active, #removeSelected:active {
   outline: none;
 }
 

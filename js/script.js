@@ -4,7 +4,7 @@ var attractionID;
 var latitude;
 var longitude;
 var viewingSavedShows = false;
-var markers;
+var markers = [];
 var mapStyling = [
   { elementType: 'geometry', stylers: [{ color: '#393e46'}] },
   { elementType: 'labels.text.stroke', stylers: [{ color: '#929aab'}] },
@@ -173,13 +173,14 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
   };
 
   $scope.clearSaved = function(){
-
     var event = 0;
     var eventList = []; 
-
+    
     for(var i in localStorage){
-      event = JSON.parse(localStorage[i]); 
-      eventList.push(event);
+      if (i !== "key" && i !== "length" && i !== "getItem" && i !== "setItem" && i !== "removeItem" && i !== "clear") {
+        event = JSON.parse(localStorage[i]);
+        eventList.push(event);
+      }
     }
 
     if(eventList == 0){
@@ -205,15 +206,16 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
   };
 
   $scope.seeSavedShows = function(){
-
     selectedMarker = 0;
-
+    
     var event = 0;
     eventList = []; 
-
+    
     for(var i in localStorage){
-      event = JSON.parse(localStorage[i]); 
-      eventList.push(event);
+      if(i !== "key" && i!=="length" && i!=="getItem" && i!=="setItem" && i!=="removeItem" && i!=="clear") {
+        event = JSON.parse(localStorage[i]); 
+        eventList.push(event);
+      }
     }
 
     if(eventList.length == 0){
