@@ -5,6 +5,86 @@ var latitude;
 var longitude;
 var viewingSavedShows = false;
 var markers;
+var darkModeMapStyling = [
+  { elementType: 'geometry', stylers: [{ color: '#393e46'}] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#929aab'}] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#eeeeee'}] },
+  {
+    featureType: 'administrative.locality',
+    elementType: 'labels.text.fill',
+    stylers: [{ color: '#eeeeee'}]
+  },
+  {
+    featureType: 'poi',
+    elementType: 'labels.text.fill',
+    stylers: [{ color: '#eeeeee'}]
+  },
+  {
+    featureType: 'poi.park',
+    elementType: 'geometry',
+    stylers: [{ color: '#263c3f'}]
+  },
+  {
+    featureType: 'poi.park',
+    elementType: 'labels.text.fill',
+    stylers: [{ color: '#eeeeee'}]
+  },
+  {
+    featureType: 'road',
+    elementType: 'geometry',
+    stylers: [{ color: '#38414e'}]
+  },
+  {
+    featureType: 'road',
+    elementType: 'geometry.stroke',
+    stylers: [{ color: '#929aab'}]
+  },
+  {
+    featureType: 'road',
+    elementType: 'labels.text.fill',
+    stylers: [{ color: '#eeeeee'}]
+  },
+  {
+    featureType: 'road.highway',
+    elementType: 'geometry',
+    stylers: [{ color: '#746855'}]
+  },
+  {
+    featureType: 'road.highway',
+    elementType: 'geometry.stroke',
+    stylers: [{ color: '#929aab'}]
+  },
+  {
+    featureType: 'road.highway',
+    elementType: 'labels.text.fill',
+    stylers: [{ color: '#eeeeee'}]
+  },
+  {
+    featureType: 'transit',
+    elementType: 'geometry',
+    stylers: [{ color: '#2f3948'}]
+  },
+  {
+    featureType: 'transit.station',
+    elementType: 'labels.text.fill',
+    stylers: [{ color: '#eeeeee'}]
+  },
+  {
+    featureType: 'water',
+    elementType: 'geometry',
+    stylers: [{ color: '#f7f7f7'}]
+  },
+  {
+    featureType: 'water',
+    elementType: 'labels.text.fill',
+    stylers: [{ color: '#eeeeee'}]
+  },
+  {
+    featureType: 'water',
+    elementType: 'labels.text.stroke',
+    stylers: [{ color: '#929aab'}]
+  }
+]
 
 // ============= ANGULAR =============
 var app = angular.module('showDown', []);
@@ -60,7 +140,8 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
             var mapDiv = document.getElementById('map');
             var map = new google.maps.Map(mapDiv, {
               center: new google.maps.LatLng(38, -97),
-              zoom: 4
+              zoom: 4,
+              styles: darkModeMapStyling
             });
 
             $scope.savedMode = false;
@@ -70,7 +151,8 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
             var mapDiv = document.getElementById('map');
             var map = new google.maps.Map(mapDiv, {
               center: new google.maps.LatLng(38, -97),
-              zoom: 4
+              zoom: 4,
+              styles: darkModeMapStyling
             });
             for(var i = 0; i < eventList.length; i++){
               event = eventList[i];
@@ -113,7 +195,8 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
       var mapDiv = document.getElementById('map');
           var map = new google.maps.Map(mapDiv, {
           center: new google.maps.LatLng(38, -97),
-          zoom: 4
+          zoom: 4,
+          styles: darkModeMapStyling
       });
       alert("Saved shows cleared.");
     }
@@ -148,7 +231,8 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
       var mapDiv = document.getElementById('map');
       var map = new google.maps.Map(mapDiv, {
         center: new google.maps.LatLng(38, -97),
-        zoom: 4
+        zoom: 4,
+        styles: darkModeMapStyling
       });
       for(var i = 0; i < eventList.length; i++){
         event = eventList[i];
@@ -396,6 +480,7 @@ function initAutocomplete() {
   var map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 38, lng: -97},
     zoom: 4,
+    styles: darkModeMapStyling,
     mapTypeId: 'roadmap'
   });
 
@@ -551,7 +636,8 @@ function initMap(json){
   var mapDiv = document.getElementById('map');
   var map = new google.maps.Map(mapDiv, {
     center: new google.maps.LatLng(38, -97),
-    zoom: 4
+    zoom: 4,
+    styles: darkModeMapStyling
   });
 
 
@@ -727,7 +813,8 @@ function initMapLocationSearch(json){
   var map = new google.maps.Map(mapDiv, {
     // center at the searched city latitude, longitude
     center: new google.maps.LatLng(latitude,longitude),
-    zoom: 10
+    zoom: 10,
+    styles: darkModeMapStyling
   });
   for(var i=0; i<json.page.totalElements; i++) {
     addMarker(map, json._embedded.events[i]);

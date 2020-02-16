@@ -1,20 +1,22 @@
 body {
-  background-image: url('../audience.jpg');
+  /* background-image: url('../audience.jpg'); */
   background-size: cover;
-  /*background-color: #5410ff;*/
+  background: #f7f7f7;
 }
 
 h1 {
-  /*font-family: Roboto;*/
-  font-family: 'Permanent Marker';
+  font-family: 'Josefin Sans', sans-serif;
+  /* font-family: 'Permanent Marker'; */
   font-size: 70px;
-  color: #3ce5bf;
+  color: #393e46;
   font-weight: bold;
   position: absolute;
   top: -8px;
   left: 450px;
   /*text-shadow: 0 3px 9px #d01aff;*/
 }
+
+
 
 /*venue info*/
 div > p {
@@ -45,10 +47,9 @@ div > p {
   width: 265px;
   height: 470px;
   color: #000000;
-  background-color: #3ce5bf;
+  background-color: #beebe9;
   border-radius: 3px;
-  box-shadow: 1px 1px 5px #3ae5c0;
-  font: Roboto;
+  font: 'Josefin Sans', sans-serif;
 }
 
 #musicPlayer {
@@ -58,22 +59,20 @@ div > p {
   width: 265px;
   height: auto;
   border-radius: 3px;
-  background-color: #3ce5bf;
-  box-shadow: 1px 1px 5px #3ae5c0;
-  font: Roboto;
+  background-color: #beebe9;
+  font: 'Josefin Sans', sans-serif;
 }
 
 /* Always set the map height explicitly to define the size of the div
 * element that contains the map. */
 #map {
   position: absolute;
-  height: 470px;
+  height: 440px;
   width: 706px;
   position: absolute;
   left: 285px;
-  top: 150px;
+  top: 160px;
   border-radius: 3px;
-  box-shadow: 2px 2px 5px #3ae5c0;
 }
 /* Optional: Makes the sample page fill the window. */
 html, body {
@@ -92,8 +91,8 @@ html, body {
 }
 
 #pac-input, #artistSearch {
-  background-color: #fff;
-  font-family: Roboto;
+  background: #eeeeee;
+  font-family: 'Josefin Sans', sans-serif;
   font-size: 15px;
   font-weight: 300;
   padding: 0 11px 0 13px;
@@ -106,21 +105,22 @@ html, body {
 }
 
 #pac-input:focus {
-  border-color: #4d90fe;
+  border-color: gray;
+  background: #e0e0e0;
 }
 
 .pac-container {
-  font-family: Roboto;
+  font-family: 'Josefin Sans', sans-serif;
 }
 
 #type-selector {
   color: #fff;
-  background-color: #4d90fe;
+  background-color: #bbded6;
   padding: 5px 11px 0px 11px;
 }
 
 #type-selector label {
-  font-family: Roboto;
+  font-family: 'Josefin Sans', sans-serif;
   font-size: 13px;
   font-weight: 300;
 }
@@ -134,8 +134,8 @@ html, body {
   left: 615px;
   top: 105px;
   width: 230px;
-  background-color: #fff;
-  font-family: Roboto;
+  background-color: #eeeeee;
+  font-family: 'Josefin Sans', sans-serif;
   font-size: 15px;
   font-weight: 300;
   padding: 0 11px 0 13px;
@@ -157,8 +157,8 @@ html, body {
 }
 
 #calendarBox {
-  background-color: #fff;
-  font-family: Roboto;
+  background-color: #eeeeee;
+  font-family: 'Josefin Sans', sans-serif;
   font-size: 15px;
   font-weight: 300;
   padding: 0 11px 0 13px;
@@ -242,6 +242,25 @@ label {
   position: absolute;
   left: 1190px;
   top: 0px;
+  background: #eeeeee;
+  color: #393e46;
+  border-color: #393e46;
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+#savedShows, #got-it {
+  background: #eeeeee;
+  color: #393e46;
+  border-color: #393e46;
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+#help:hover, #savedShows:hover, #got-it:hover {
+  background: #e0e0e0;
+}
+
+#help:active, #savedShows:active, #got-it:active {
+  outline: none;
 }
 
 @keyframes fade-in {
@@ -279,6 +298,10 @@ label {
   margin-right: 15px;
 }
 
+#close-sign:hover, #close-sign:active {
+  color: white;
+}
+
 #help-child {
   position: absolute;
   z-index: 4;
@@ -290,12 +313,8 @@ label {
   height: 530px;
   padding: 15px;
   padding-top: 5px;
-  background: #29a086cc;
+  background: #eeeeeed7;
   border-radius: 5px;
-}
-
-#help-child button {
-  
 }
 
 h2 {
@@ -303,10 +322,7 @@ h2 {
 }
 
 #help-info {
-  color: white;
+  color: #393e46;
   font-size: 17px;
-}
-
-#close-sign:hover, #close-sign:active {
-  color: white;
+  font-family: 'Josefin Sans', sans-serif;
 }
