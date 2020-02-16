@@ -1,6 +1,6 @@
 var inputDate;
 var attractionID;
-var apiKey = 'AIzaSyCgToID7VGftJesWx1S_Ax_UY3f4NAqBf4';
+var apiKey = 'AIzaSyARBeGQnoeVANAG1vkdYM3Tw7v1JQxaZfQ';
 var latitude;
 var longitude;
 var viewingSavedShows = false;
