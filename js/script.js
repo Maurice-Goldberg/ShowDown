@@ -1,6 +1,5 @@
 var inputDate;
 var attractionID;
-// var apiKey = 'AIzaSyARBeGQnoeVANAG1vkdYM3Tw7v1JQxaZfQ';
 var latitude;
 var longitude;
 var viewingSavedShows = false;
@@ -461,28 +460,28 @@ $(document).ready(function(){
   // $('#musicPlayer').hide();
 
   /** dropdown selection control **/
-  $('#categoryDropdown').on('change', function() {
-    if (this.value == 'Artist')
-    {
-      $('#find').animate({
-        left: "-=195",
-      }, 750);
-      $('#pac-input').hide();
-      $('#artistSearch').show();
-      $('#calendarForm').fadeOut(1000);
-    }
-    else
-    {
-      $('#find').animate({
-        left: "+=195",
-      }, 750);
-      $('#artistSearch').hide();
-      $('#pac-input').show();
-      $('#calendarForm').fadeIn(1250);
-      $('#artistSearch').val(''); //empty the input field so that autocomplete map loads
-      initAutocomplete(); //load autocomplete map
-    }
-  });
+  // $('#categoryDropdown').on('change', function() {
+  //   if (this.value == 'Artist')
+  //   {
+  //     $('#find').animate({
+  //       left: "-=195",
+  //     }, 750);
+  //     $('#pac-input').hide();
+  //     $('#artistSearch').show();
+  //     $('#calendarForm').fadeOut(1000);
+  //   }
+  //   else
+  //   {
+  //     $('#find').animate({
+  //       left: "+=195",
+  //     }, 750);
+  //     $('#artistSearch').hide();
+  //     $('#pac-input').show();
+  //     $('#calendarForm').fadeIn(1250);
+  //     $('#artistSearch').val(''); //empty the input field so that autocomplete map loads
+  //     initAutocomplete(); //load autocomplete map
+  //   }
+  // });
 
   /** get data from calendar input **/
   $('input[type="date"]').change(function(){
@@ -509,17 +508,21 @@ function initAutocomplete() {
     searchBox.setBounds(map.getBounds());
   });
 
-  //make enter button trigged by clicking on an autocomplete suggestion
-  google.maps.event.addDomListener(document.getElementById('pac-input'), 'change', function(e) {
-    debugger
-    google.maps.event.trigger(this, 'keydown', { keyCode: 13 });
-  });
-
   //enter key chooses first suggestion
   google.maps.event.addDomListener(document.getElementById('pac-input'), 'keydown', function(e) {
     if (e.keyCode === 13 && !e.triggered) {
-      google.maps.event.trigger(this, 'keydown', { keyCode: 40 })
-      google.maps.event.trigger(this, 'keydown', { keyCode: 13, triggered: true });
+      var arrowDown = new Event('keydown');
+      arrowDown.code = "ArrowDown";
+      arrowDown.key = "ArrowDown";
+      arrowDown.keyCode = 40;
+      google.maps.event.trigger(this, 'keydown', arrowDown);
+
+      var pressEnter = new Event('keydown');
+      pressEnter.code = "Enter";
+      pressEnter.key = "Enter";
+      pressEnter.keyCode = 13;
+      pressEnter.triggered = true;
+      google.maps.event.trigger(this, 'keydown', pressEnter);
     }
   });
 
@@ -530,7 +533,7 @@ function initAutocomplete() {
         scope.$apply(function(){
         scope.savedMode = false;
       }); 
-      e.preventDefault();
+      // e.preventDefault();
 
       var markers = [];
       var places = searchBox.getPlaces();
@@ -635,25 +638,25 @@ function initAutocomplete() {
   });
 
   //make artist search triggered by enter key
-  google.maps.event.addDomListener(document.getElementById('artistSearch'), 'keydown', function(e) { 
-    if (e.keyCode == 13) {
-      var artistName = $('#artistSearch').val();
-      if (artistName != "") //if searching for an artist
-      {
-        var scope = angular.element($("#MainWrap")).scope();
-        scope.$apply(function(){
-          scope.savedMode = false;
-        });
-        viewingSavedShows = false; 
-        // searchForArtist(artistName, 1); 
-      }
-      else
-      {
-        alert("Please input the artist's name");
-      } 
-    }
+//   google.maps.event.addDomListener(document.getElementById('artistSearch'), 'keydown', function(e) { 
+//     if (e.keyCode == 13) {
+//       var artistName = $('#artistSearch').val();
+//       if (artistName != "") //if searching for an artist
+//       {
+//         var scope = angular.element($("#MainWrap")).scope();
+//         scope.$apply(function(){
+//           scope.savedMode = false;
+//         });
+//         viewingSavedShows = false; 
+//         // searchForArtist(artistName, 1); 
+//       }
+//       else
+//       {
+//         alert("Please input the artist's name");
+//       } 
+//     }
 
-  });     
+//   });     
 };
 
 

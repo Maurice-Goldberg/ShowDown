@@ -115,7 +115,7 @@ html, body {
   width: 400px;
   position: absolute;
   top: 95px;
-  left: 200px;
+  left: 320px;
   border-radius: 5px;
 }
 
@@ -167,7 +167,7 @@ html, body {
 /*for the dropdown calender */
 #calendarForm {
   position: absolute;
-  left: 850px;
+  left: 770px;
   top: 95px;
 }
 
@@ -321,11 +321,11 @@ label {
   position: absolute;
   z-index: 4;
   margin-left: 27%;
-  margin-top: 10px;
+  margin-top: 100px;
   animation-name: fade-in;
   animation-duration: 0.6s;
   width: 600px;
-  height: 590px;
+  height: 480px;
   padding: 15px;
   padding-top: 5px;
   background: #eeeeeed7;

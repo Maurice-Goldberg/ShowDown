@@ -26,13 +26,13 @@
       <button type="submit" id="help" class="btn btn-primary"  style="float: right;" ng-click="showHelp = !showHelp">Help</button>
     </div>
         <input id="pac-input" class="controls" type="text" placeholder="Enter Location...">
-        <input id="artistSearch" class="controls" type="text" placeholder="Enter Artist..." hidden>
+        <!-- <input id="artistSearch" class="controls" type="text" placeholder="Enter Artist..." hidden> -->
 
 
-        <select id="categoryDropdown" class="form-control" ng-model="category" ng-change="changeOptionSelected()">
+        <!-- <select id="categoryDropdown" class="form-control" ng-model="category" ng-change="changeOptionSelected()">
           <option selected value = "City">Location</option>
           <option value = "Artist">Artist</option>
-        </select>
+        </select> -->
 
         <form id="calendarForm" action="#" class="ws-validate">
           <div class="form-row show-inputbtns">
@@ -56,8 +56,8 @@
       </div>
       <div id="help-child" ng-show="showHelp"> 
         <strong id="help-info" > 
-          <h2>Search for events by artist:</h2>
-            <p>Type in an artist's full name and correct spelling and press enter. If no markers show up, either there were no upcoming shows for the artist, or the artist was not recognized.</p> 
+          <!-- <h2>Search for events by artist:</h2>
+            <p>Type in an artist's full name and correct spelling and press enter. If no markers show up, either there were no upcoming shows for the artist, or the artist was not recognized.</p>  -->
           <h2>Search for events by city:</h2>
             <p>Start typing in a city, click the corresponding Google auto-fill in the drop-down, and press enter (or just press enter to auto-complete the first suggestion).</p>
           <h2>View show details:</h2>
