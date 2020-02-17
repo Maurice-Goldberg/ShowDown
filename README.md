@@ -23,6 +23,6 @@ The user can view all saved shows by clicking the "Saved Shows" button on the to
 The user can remove one or all saved shows by clicking "Remove Selected" or "Clear Saved" respectively.
 ![View saved](gifs/view_saved.gif)
 
-## Help button
-The user can view an help modal that explains how to use the app by clicking the "Help" button in the top-right corner of the screen.
+## Help modal
+The user can view a help modal that explains how to use the app by clicking the "Help" button in the top-right corner of the screen.
 ![Help](gifs/help.gif)
