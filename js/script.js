@@ -122,9 +122,9 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
         }
         else {
           $('#sideBar').fadeOut('slow');
-          $('#musicPlayer').fadeOut('slow');
+          // $('#musicPlayer').fadeOut('slow');
           $('#sideBar').addClass('hidden');
-          $('#musicPlayer').addClass('hidden');
+          // $('#musicPlayer').addClass('hidden');
 
           localStorage.removeItem(id); 
 
@@ -189,9 +189,9 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
     else{
       localStorage.clear();
       $('#sideBar').fadeOut('slow');
-      $('#musicPlayer').fadeOut('slow');
+      // $('#musicPlayer').fadeOut('slow');
       $('#sideBar').addClass('hidden');
-      $('#musicPlayer').addClass('hidden');
+      // $('#musicPlayer').addClass('hidden');
 
       var mapDiv = document.getElementById('map');
           var map = new google.maps.Map(mapDiv, {
@@ -224,9 +224,9 @@ app.controller('showDownController', ['$scope', '$http', '$compile',  function($
     else{
 
       $('#sideBar').fadeOut('slow');
-      $('#musicPlayer').fadeOut('slow');
+      // $('#musicPlayer').fadeOut('slow');
       $('#sideBar').addClass('hidden');
-      $('#musicPlayer').addClass('hidden');
+      // $('#musicPlayer').addClass('hidden');
 
       viewingSavedShows = true; 
       $scope.savedMode = true; 
@@ -277,9 +277,9 @@ var stopPlayers = function() {
 // function called to find artist
 var getArtistData = function(artistName) {  
   $('#sideBar').fadeOut('slow');
-  $('#musicPlayer').fadeOut('slow');
+  // $('#musicPlayer').fadeOut('slow');
   $('#sideBar').addClass('hidden');
-  $('#musicPlayer').addClass('hidden');
+  // $('#musicPlayer').addClass('hidden');
       
    /* get attraction ID from artistName */
   $.ajax({
@@ -339,108 +339,115 @@ var getArtistData = function(artistName) {
 // ============= SPOTIFY FUNCTIONS =============
 // Gets top tracks for artist ID, then appends players
 
-var accessToken = "BQDtup3Tmfaq6d1tAWlDpgKpTuaaq8m_OmHgArK7PRS53uIk4J1lXtZ_ZpUGkrMjq-giJ4FAiU8_Bjy9UDEFmQVptaWb_98PvRwOGSoVD_PlL8t-SGM7mVyuDO6GlCnpf6XgLUGxvlc_06VCylfmDAxiqKxeRtjfk3Aog5uF&refresh_token=AQDOeePustOEF44a4jAHpFIrhbPuzw6i2f--kwHHy-KDzJ-XgrMO_0Hkd_KL-YCC6jfeKilASGqDkU0MogmqJBKWsPHVsCHgZFLkUDUak1bZK6gnRzBm925qUn7zqT1rqMk"
-var searchForTopTracks = function (artistID) {
-  $.ajax({
-    url: 'https://api.spotify.com/v1/artists/' + artistID + '/top-tracks',
-    headers: {
-      'Authorization': 'Bearer ' + accessToken
-    },
-    data: {
-      country: 'US',
-    },
-    success: function (response) {
-      // this is the local 'current' variable for audio that this new button will refer to
-      var curr = current_global;
+// var requestAccessToken = function() {
+//   $.ajax({
+//     method: "GET",
+//     url: "https://accounts.spotify.com/authorize?client_id=a0be752c406c4861aa89b0c6d8a46a27&redirect_uri=http://mauricegoldberg.dev/Showdown",
 
-      // Get artist, album, and track info from response
-      var artist = response['tracks'][0]['artists'][0]['name']
-      var album = response['tracks'][0]['album']['name']
-      var track = response['tracks'][0]['name']
+//   })
+// }
 
-      var audioInfo = "<br><font color='black'> Artist: " + artist + "<br>" + "Album: " + album + "<br>" + "Track: " + track + "</font><br>"
+// var searchForTopTracks = function (artistID) {
+//   $.ajax({
+//     url: 'https://api.spotify.com/v1/artists/' + artistID + '/top-tracks',
+//     headers: {
+//       'Authorization': 'Bearer ' + accessToken
+//     },
+//     data: {
+//       country: 'US',
+//     },
+//     success: function (response) {
+//       // this is the local 'current' variable for audio that this new button will refer to
+//       var curr = current_global;
 
-      audioVariables[current_global] = new Audio();
-      audioVariables[current_global].src = response['tracks'][0]['preview_url']
+//       // Get artist, album, and track info from response
+//       var artist = response['tracks'][0]['artists'][0]['name']
+//       var album = response['tracks'][0]['album']['name']
+//       var track = response['tracks'][0]['name']
 
-      current_global++; 
+//       var audioInfo = "<br><font color='black'> Artist: " + artist + "<br>" + "Album: " + album + "<br>" + "Track: " + track + "</font><br>"
 
-      var audioButton = document.createElement("button");
-      audioButton.className = "btn btn-primary"
-      audioButton.id = "audio-btn"
-      audioButton.innerHTML = "<span class='glyphicon glyphicon-play'></span>"
+//       audioVariables[current_global] = new Audio();
+//       audioVariables[current_global].src = response['tracks'][0]['preview_url']
 
-      audioElements.push(audioButton);
+//       current_global++; 
 
-      audioButton.onclick = function() { 
-        if(!audioVariables[curr].paused) {
-          audioVariables[curr].pause();
-          audioButton.innerHTML = "<span class='glyphicon glyphicon-play'></span>"
-        }
-        else{
-          // find any currently playing audio objects, pause them and change the innerHTML symbol to 'play'
-          for (var i = 0; i < current_global; i++)
-          {
-            if (!audioVariables[i].paused)
-            {
-              audioVariables[i].pause();
-              audioElements[i].innerHTML = "<span class='glyphicon glyphicon-play'></span>"
-            }
-          }
-          audioVariables[curr].play();
-          audioButton.innerHTML = "<span class='glyphicon glyphicon-pause'></span>"
-        }
-      };
+//       var audioButton = document.createElement("button");
+//       audioButton.className = "btn btn-primary"
+//       audioButton.id = "audio-btn"
+//       audioButton.innerHTML = "<span class='glyphicon glyphicon-play'></span>"
 
-      audioVariables[curr].addEventListener('ended', function () {
-        audioButton.innerHTML = "<span class='glyphicon glyphicon-play'></span>"
-      });
+//       audioElements.push(audioButton);
 
-      $('#musicPlayer').append(audioInfo);
-      $('#musicPlayer').append("<br>");
-      $('#musicPlayer').append(audioButton);
-      $('#musicPlayer').append("<hr>");
+//       audioButton.onclick = function() { 
+//         if(!audioVariables[curr].paused) {
+//           audioVariables[curr].pause();
+//           audioButton.innerHTML = "<span class='glyphicon glyphicon-play'></span>"
+//         }
+//         else{
+//           // find any currently playing audio objects, pause them and change the innerHTML symbol to 'play'
+//           for (var i = 0; i < current_global; i++)
+//           {
+//             if (!audioVariables[i].paused)
+//             {
+//               audioVariables[i].pause();
+//               audioElements[i].innerHTML = "<span class='glyphicon glyphicon-play'></span>"
+//             }
+//           }
+//           audioVariables[curr].play();
+//           audioButton.innerHTML = "<span class='glyphicon glyphicon-pause'></span>"
+//         }
+//       };
 
-    }
-  });
-}; 
+//       audioVariables[curr].addEventListener('ended', function () {
+//         audioButton.innerHTML = "<span class='glyphicon glyphicon-play'></span>"
+//       });
 
-// Searches for an artist on Spotify, returns that artist's ID 
-var searchForArtist = function (query, mode) {
-  $.ajax({
-    url: 'https://api.spotify.com/v1/search',
-    headers: {
-      'Authorization': 'Bearer ' + accessToken
-    },
-    data: {
-      q: query,
-      type: 'artist'
-    },
-    success: function (response) { 
-      //error handling
+//       $('#musicPlayer').append(audioInfo);
+//       $('#musicPlayer').append("<br>");
+//       $('#musicPlayer').append(audioButton);
+//       $('#musicPlayer').append("<hr>");
 
-      if(mode == 0){
-        if (response['artists']['items'][0] != undefined)
-        {
-          artistCount++;
-          searchForTopTracks(String(response['artists']['items'][0]['id']));
-        }
-      }
-      else{
-        var listOfPossibleArtists = response['artists']['items']; 
-        if(listOfPossibleArtists.length == 0){
-          alert('No artist found named \'' + query + '\'. Please type the artist\'s full name.');
-        }
-        else{
-          var name = (response['artists']['items'][0]['name']);
-          getArtistData(name);
-        }
+//     }
+//   });
+// }; 
 
-      }
+// // Searches for an artist on Spotify, returns that artist's ID 
+// var searchForArtist = function (query, mode) {
+//   $.ajax({
+//     url: 'https://api.spotify.com/v1/search',
+//     headers: {
+//       'Authorization': 'Bearer ' + accessToken
+//     },
+//     data: {
+//       q: query,
+//       type: 'artist'
+//     },
+//     success: function (response) { 
+//       //error handling
 
-    }
-  });
-};
+//       if(mode == 0){
+//         if (response['artists']['items'][0] != undefined)
+//         {
+//           artistCount++;
+//           searchForTopTracks(String(response['artists']['items'][0]['id']));
+//         }
+//       }
+//       else{
+//         var listOfPossibleArtists = response['artists']['items']; 
+//         if(listOfPossibleArtists.length == 0){
+//           alert('No artist found named \'' + query + '\'. Please type the artist\'s full name.');
+//         }
+//         else{
+//           var name = (response['artists']['items'][0]['name']);
+//           getArtistData(name);
+//         }
+
+//       }
+
+//     }
+//   });
+// };
 
 $(document).ready(function(){
 
@@ -451,7 +458,7 @@ $(document).ready(function(){
   inputDate = getCurrentDate();
 
   $('#sideBar').hide();
-  $('#musicPlayer').hide();
+  // $('#musicPlayer').hide();
 
   /** dropdown selection control **/
   $('#categoryDropdown').on('change', function() {
@@ -502,10 +509,23 @@ function initAutocomplete() {
     searchBox.setBounds(map.getBounds());
   });
 
+  //make enter button trigged by clicking on an autocomplete suggestion
+  google.maps.event.addDomListener(document.getElementById('pac-input'), 'change', function(e) {
+    debugger
+    google.maps.event.trigger(this, 'keydown', { keyCode: 13 });
+  });
+
+  //enter key chooses first suggestion
+  google.maps.event.addDomListener(document.getElementById('pac-input'), 'keydown', function(e) {
+    if (e.keyCode === 13 && !e.triggered) {
+      google.maps.event.trigger(this, 'keydown', { keyCode: 40 })
+      google.maps.event.trigger(this, 'keydown', { keyCode: 13, triggered: true });
+    }
+  });
+
   //make location search triggered by enter key
   google.maps.event.addDomListener(document.getElementById('pac-input'), 'keydown', function(e) { 
-    if (e.keyCode == 13) { 
-
+    if (e.keyCode == 13) {
       var scope = angular.element($("#MainWrap")).scope();
         scope.$apply(function(){
         scope.savedMode = false;
@@ -611,7 +631,6 @@ function initAutocomplete() {
         $('#musicPlayer').addClass('hidden');
         
       }
-      
     }
   });
 
@@ -626,7 +645,7 @@ function initAutocomplete() {
           scope.savedMode = false;
         });
         viewingSavedShows = false; 
-        searchForArtist(artistName, 1); 
+        // searchForArtist(artistName, 1); 
       }
       else
       {
@@ -678,20 +697,20 @@ function addMarker(map, event) {
     selectedMarker = event;
 
     // Delete previous music players
-    $('#musicPlayer').empty();
+    // $('#musicPlayer').empty();
 
     // Stop currently playing players from previous search
-    stopPlayers();
+    // stopPlayers();
 
     //show musicPlayer element if it's hidden
-    if($('#musicPlayer').hasClass('hidden')) {
+    // if($('#musicPlayer').hasClass('hidden')) {
 
-      //remove 'hidden' class (i.e. show element)
-      $('#musicPlayer').removeClass('hidden');
+    //   //remove 'hidden' class (i.e. show element)
+    //   $('#musicPlayer').removeClass('hidden');
       
-      //fadeIn element
-      $('#musicPlayer').fadeIn('slow');
-    }
+    //   //fadeIn element
+    //   $('#musicPlayer').fadeIn('slow');
+    // }
 
     var artists = [];
     var attractions = event['_embedded']['attractions'];
@@ -706,9 +725,9 @@ function addMarker(map, event) {
 
       console.log(artists)
 
-      for(var i = 0; i < artists.length; i++){
-        searchForArtist(artists[i], 0);
-      }
+      // for(var i = 0; i < artists.length; i++){
+      //   searchForArtist(artists[i], 0);
+      // }
     }
     
 
@@ -749,7 +768,12 @@ function addMarker(map, event) {
       $('#eventName').text(event.name); 
 
       //event date & time in Universal Time Coordinated
-      $('#eventTime').text('Date and time: '+ event.dates.start.dateTime.slice(0, 10) + " " + event.dates.start.dateTime.slice(10 + Math.abs(0))); 
+      var date = new Date(event.dates.start.dateTime).toString().split(" G")[0].split(":");
+      date.pop();
+      date.join(":");
+
+      $('#eventTime').text(date);
+      // + " " + event.dates.start.dateTime.slice(10 + Math.abs(0)))
 
       if($('#sideBar').has("#ticketLink")) { 
         $('#ticketLink').remove();
@@ -779,7 +803,7 @@ function addMarker(map, event) {
         $('#venueName').text('Venue: ' + results.name);
 
         //results.formatted_address for venue address
-        $('#venueAddress').text('Address: ' + results.formatted_address);
+        $('#venueAddress').text(results.formatted_address);
 
         //phone number
         $('#venuePhone').text(results.formatted_phone_number);

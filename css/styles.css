@@ -24,6 +24,16 @@ div > p {
   margin-left: 13px;
   margin-right: 13px;
   color: #000000;
+  font-weight: 100;
+}
+
+#eventName {
+  display: block;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow: hidden;
+  max-height: 3.6em;
+  line-height: 1.8em;
 }
 
 #venuePhoto {
@@ -45,7 +55,7 @@ div > p {
   top: 150px;
   left: 1000px;
   width: 265px;
-  height: 450px;
+  height: 460px;
   color: #393e46;
   background-color: #929aab38;
   border-radius: 5px;
@@ -311,11 +321,11 @@ label {
   position: absolute;
   z-index: 4;
   margin-left: 27%;
-  margin-top: 60px;
+  margin-top: 10px;
   animation-name: fade-in;
   animation-duration: 0.6s;
   width: 600px;
-  height: 530px;
+  height: 590px;
   padding: 15px;
   padding-top: 5px;
   background: #eeeeeed7;
@@ -324,6 +334,7 @@ label {
 
 h2 {
   font-size: 22px;
+  margin-bottom: 3px;
 }
 
 #help-info {
